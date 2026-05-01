@@ -1637,13 +1637,40 @@ img {
     grid-template-columns: 1fr;
   }
 
+  .navbar {
+    width: calc(100% - 32px);
+    max-width: 420px;
+    bottom: 16px;
+    padding: 6px;
+    gap: 4px;
+  }
+
+  .nav-item {
+    padding: 8px 4px;
+    flex: 1;
+    justify-content: center;
+  }
+
   .profile-hero {
     grid-template-columns: 1fr;
+    text-align: center;
+    padding: 24px 16px;
   }
 
   .profile-avatar {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+  }
+
+  .profile-hero-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .profile-chip-row {
+    justify-content: center;
   }
 
   .action-buttons,
