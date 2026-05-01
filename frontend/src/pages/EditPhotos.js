@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, X, Camera } from 'lucide-react';
+import { ArrowLeft, Plus, X } from 'lucide-react';
 import API from '../api';
 
 function EditPhotos({ user, setUser }) {

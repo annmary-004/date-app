@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Shield, Lock, UserX } from 'lucide-react';
+import { ArrowLeft, Lock, UserX } from 'lucide-react';
 import API from '../api';
 
 function Security({ user }) {
@@ -15,19 +15,18 @@ function Security({ user }) {
   const [loadingBlocked, setLoadingBlocked] = useState(true);
 
   useEffect(() => {
+    const fetchBlockedUsers = async () => {
+      try {
+        const res = await API.get(`/api/user/blocked/${user._id}`);
+        setBlockedUsers(res.data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoadingBlocked(false);
+      }
+    };
     fetchBlockedUsers();
-  }, []);
-
-  const fetchBlockedUsers = async () => {
-    try {
-      const res = await API.get(`/api/user/blocked/${user._id}`);
-      setBlockedUsers(res.data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoadingBlocked(false);
-    }
-  };
+  }, [user._id]);
 
   const handleChangePassword = async (e) => {
     e.preventDefault();

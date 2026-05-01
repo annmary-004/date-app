@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
-import { Flame } from 'lucide-react';
+
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Landing from './pages/Landing';
@@ -40,7 +40,6 @@ function App() {
   }, []);
 
   const firstName = user?.name?.split(' ')[0] || 'there';
-  const chips = profileChips(user);
   const needsOnboarding = Boolean(user) && !user.profileCompleted;
 
   return (
