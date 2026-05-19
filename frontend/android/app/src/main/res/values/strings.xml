@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">date-app</string>
+    <string name="title_activity_main">date-app</string>
+    <string name="package_name">com.dateapp.app</string>
+    <string name="custom_url_scheme">com.dateapp.app</string>
+</resources>

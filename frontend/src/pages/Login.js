@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, Heart, Lock, Mail } from 'lucide-react';
 import API from '../api';
+import '../auth-animated.css';
 
 function Login({ setUser }) {
   const [email, setEmail] = useState('');
@@ -29,61 +29,58 @@ function Login({ setUser }) {
   };
 
   return (
-    <div className="auth-page auth-page-login">
-      <div className="login-shell glass-panel">
-        <div className="login-brand">
-          <div className="auth-brand-mark login-brand-icon">
-            <Heart size={22} strokeWidth={2.5} fill="currentColor" />
-          </div>
-          <h1>Welcome back</h1>
+    <div className="auth-animated-page">
+      <div className="auth-glass-container">
+        
+        <div className="auth-hero">
+          <h1>Dating App</h1>
           <p>
-            After you sign in, every profile shows <strong>gender</strong>, <strong>who they want to date</strong>,
-            orientation, lifestyle, and more—like the big dating apps.
+            Welcome back to the most vibrant space to meet new people. 
+            Connect, chat, and find exactly who you're looking for.
           </p>
         </div>
 
-        {error && <p className="form-alert">{error}</p>}
+        <div className="auth-form-wrap">
+          <h2>Sign In</h2>
+          <p className="auth-subtitle">Welcome back! Please enter your details.</p>
 
-        <form onSubmit={handleLogin} className="auth-form login-form">
-          <label className="field-group field-with-icon">
-            <span>Email</span>
-            <div className="input-wrap">
-              <Mail className="input-icon" size={20} aria-hidden />
+          {error && <div className="glass-alert">{error}</div>}
+
+          <form onSubmit={handleLogin} className="glass-form">
+            <div className="glass-field">
+              <label>Email</label>
               <input
                 type="email"
                 placeholder="you@example.com"
-                className="input-field input-has-icon"
+                className="glass-input"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
-          </label>
 
-          <label className="field-group field-with-icon">
-            <span>Password</span>
-            <div className="input-wrap">
-              <Lock className="input-icon" size={20} aria-hidden />
+            <div className="glass-field">
+              <label>Password</label>
               <input
                 type="password"
-                placeholder="Your password"
-                className="input-field input-has-icon"
+                placeholder="••••••••"
+                className="glass-input"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>
-          </label>
 
-          <button type="submit" className="btn-primary" disabled={loading}>
-            <span>{loading ? 'Signing in...' : 'Sign in'}</span>
-            <ArrowRight size={18} />
-          </button>
-        </form>
+            <button type="submit" className="glass-btn" disabled={loading}>
+              {loading ? 'Signing in...' : 'Sign in'}
+            </button>
+          </form>
 
-        <p className="auth-switch">
-          New here? <Link to="/register">Create a profile</Link>
-        </p>
+          <div className="glass-switch">
+            New here? <Link to="/register">Create an account</Link>
+          </div>
+        </div>
+
       </div>
     </div>
   );

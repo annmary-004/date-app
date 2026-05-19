@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, Camera, Heart } from 'lucide-react';
 import API from '../api';
+import '../auth-animated.css';
 
 function Register({ setUser }) {
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
@@ -49,80 +49,93 @@ function Register({ setUser }) {
   const update = (key) => (e) => setFormData({ ...formData, [key]: e.target.value });
 
   return (
-    <div className="auth-page auth-page-login">
-      <div className="login-shell glass-panel">
-        <div className="login-brand">
-          <div className="auth-brand-mark login-brand-icon">
-            <Heart size={22} strokeWidth={2.5} fill="currentColor" />
-          </div>
-          <h1>Create account</h1>
-          <p>Details like gender / who you want to date will be asked after login in step-by-step pages.</p>
+    <div className="auth-animated-page">
+      <div className="auth-glass-container">
+        
+        <div className="auth-hero">
+          <h1>Dating App</h1>
+          <p>
+            Join a vibrant community. Your perfect match is just a few clicks away.
+            Sign up today and start your journey.
+          </p>
         </div>
 
-        {error && <p className="form-alert">{error}</p>}
+        <div className="auth-form-wrap">
+          <h2>Create Account</h2>
+          <p className="auth-subtitle">Set up your profile to get started.</p>
 
-        <form onSubmit={handleRegister} className="auth-form login-form">
-          <label className="field-group">
-            <span>Name</span>
-            <input
-              type="text"
-              placeholder="First name"
-              className="input-field"
-              required
-              value={formData.name}
-              onChange={update('name')}
-            />
-          </label>
-          <label className="field-group">
-            <span>Email</span>
-            <input
-              type="email"
-              placeholder="you@email.com"
-              className="input-field"
-              required
-              value={formData.email}
-              onChange={update('email')}
-            />
-          </label>
-          <label className="field-group">
-            <span>Password</span>
-            <input
-              type="password"
-              placeholder="Create a password"
-              className="input-field"
-              required
-              value={formData.password}
-              onChange={update('password')}
-            />
-          </label>
+          {error && <div className="glass-alert">{error}</div>}
 
-          <label className="file-upload-label" htmlFor="profile-photo">
-            <div className="auth-highlight-icon file-upload-icon">
-              <Camera size={18} />
+          <form onSubmit={handleRegister} className="glass-form">
+            <div className="glass-field">
+              <label>Name</label>
+              <input
+                type="text"
+                placeholder="First name"
+                className="glass-input"
+                required
+                value={formData.name}
+                onChange={update('name')}
+              />
             </div>
-            <div className="file-upload-copy">
-              <strong>{imageFile ? 'Photo selected' : 'Profile photo'}</strong>
-              <span>{imageFile ? imageFile.name : 'Main profile photo (required).'}</span>
+
+            <div className="glass-field">
+              <label>Email</label>
+              <input
+                type="email"
+                placeholder="you@email.com"
+                className="glass-input"
+                required
+                value={formData.email}
+                onChange={update('email')}
+              />
             </div>
-          </label>
-          <input
-            id="profile-photo"
-            type="file"
-            accept="image/*"
-            required
-            className="sr-only"
-            onChange={(e) => setImageFile(e.target.files[0])}
-          />
 
-          <button type="submit" className="btn-primary" disabled={loading}>
-            <span>{loading ? 'Creating...' : 'Create account'}</span>
-            <ArrowRight size={18} />
-          </button>
-        </form>
+            <div className="glass-field">
+              <label>Password</label>
+              <input
+                type="password"
+                placeholder="Create a password"
+                className="glass-input"
+                required
+                value={formData.password}
+                onChange={update('password')}
+              />
+            </div>
 
-        <p className="auth-switch">
-          Already have an account? <Link to="/login">Log in</Link>
-        </p>
+            <label className="glass-file-upload" htmlFor="profile-photo">
+              <div className="glass-file-icon">
+                {/* Simple SVG icon instead of lucide-react to avoid emojis/logos */}
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                  <circle cx="12" cy="13" r="4"></circle>
+                </svg>
+              </div>
+              <div className="glass-file-upload-text">
+                <strong>{imageFile ? 'Photo selected' : 'Profile photo'}</strong>
+                <span>{imageFile ? imageFile.name : 'Main profile photo (required)'}</span>
+              </div>
+            </label>
+            <input
+              id="profile-photo"
+              type="file"
+              accept="image/*"
+              required
+              className="sr-only" /* Assuming sr-only is still in index.css */
+              onChange={(e) => setImageFile(e.target.files[0])}
+              style={{ display: 'none' }}
+            />
+
+            <button type="submit" className="glass-btn" disabled={loading}>
+              {loading ? 'Creating...' : 'Create account'}
+            </button>
+          </form>
+
+          <div className="glass-switch">
+            Already have an account? <Link to="/login">Log in</Link>
+          </div>
+        </div>
+
       </div>
     </div>
   );

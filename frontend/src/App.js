@@ -16,15 +16,6 @@ import EditPhotos from './pages/EditPhotos';
 import Navbar from './components/Navbar';
 import './index.css';
 
-function profileChips(user) {
-  if (!user) return [];
-  const chips = [];
-  if (user.gender) chips.push(user.gender);
-  if (user.showMe) chips.push(`Into ${user.showMe.toLowerCase()}`);
-  if (user.sexualOrientation) chips.push(user.sexualOrientation);
-  return chips;
-}
-
 function App() {
   const [user, setUser] = useState(null);
 
