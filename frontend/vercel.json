@@ -1,4 +1,5 @@
 {
+  "outputDirectory": "build",
   "env": {
     "REACT_APP_API_URL": "https://date-app-backend-stum.onrender.com"
   },
