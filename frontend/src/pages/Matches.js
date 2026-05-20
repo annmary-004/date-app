@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart, MessageCircle } from 'lucide-react';
 import API from '../api';
+import { absoluteApiUrl } from '../config';
 
 function Matches({ user }) {
   const [matches, setMatches] = useState([]);
@@ -24,7 +25,7 @@ function Matches({ user }) {
   }, [user._id]);
 
   const getAvatar = (match) => {
-    if (match.image) return match.image.startsWith('http') ? match.image : `http://localhost:5000${match.image}`;
+    if (match.image) return absoluteApiUrl(match.image);
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(match.name)}&size=300&background=ff4b4b&color=fff`;
   };
 

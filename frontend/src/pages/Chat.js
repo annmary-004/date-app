@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Send } from 'lucide-react';
 import { io } from 'socket.io-client';
 import API from '../api';
+import { absoluteApiUrl, API_BASE_URL } from '../config';
 
 function Chat({ user }) {
   const { matchId } = useParams();
@@ -15,7 +16,7 @@ function Chat({ user }) {
   const scrollRef = useRef();
 
   useEffect(() => {
-    const socket = io('http://localhost:5000');
+    const socket = io(API_BASE_URL);
     socketRef.current = socket;
 
     const loadThread = async () => {
@@ -85,7 +86,7 @@ function Chat({ user }) {
 
   const getAvatar = (data) => {
     if (!data) return '';
-    if (data.image) return data.image.startsWith('http') ? data.image : `http://localhost:5000${data.image}`;
+    if (data.image) return absoluteApiUrl(data.image);
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name)}&size=80&background=ff4b4b&color=fff`;
   };
 

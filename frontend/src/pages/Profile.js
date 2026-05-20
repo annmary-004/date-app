@@ -1,9 +1,10 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Briefcase, GraduationCap, MapPin, Settings, UserPen, Camera, Shield } from 'lucide-react';
+import { absoluteApiUrl } from '../config';
 
 function avatarOf(user) {
-  if (user.image) return user.image.startsWith('http') ? user.image : `http://localhost:5000${user.image}`;
+  if (user.image) return absoluteApiUrl(user.image);
   return `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'User')}&size=300&background=f43f5e&color=fff`;
 }
 
@@ -21,7 +22,7 @@ function Profile({ user }) {
   
   const [photoIndex, setPhotoIndex] = React.useState(0);
   const userImages = user.images && user.images.length > 0 ? user.images : (user.image ? [user.image] : []);
-  const imgSrc = userImages.length > 0 ? (userImages[photoIndex].startsWith('http') ? userImages[photoIndex] : `http://localhost:5000${userImages[photoIndex]}`) : avatarOf(user);
+  const imgSrc = userImages.length > 0 ? absoluteApiUrl(userImages[photoIndex]) : avatarOf(user);
 
   const nextPhoto = (e) => {
     e.stopPropagation();

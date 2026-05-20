@@ -15,9 +15,10 @@ import {
   X
 } from 'lucide-react';
 import API from '../api';
+import { absoluteApiUrl } from '../config';
 
 function profileImageUrl(p) {
-  if (p.image) return p.image.startsWith('http') ? p.image : `http://localhost:5000${p.image}`;
+  if (p.image) return absoluteApiUrl(p.image);
   return `https://ui-avatars.com/api/?name=${encodeURIComponent(p.name)}&size=600&background=ec4899&color=fff`;
 }
 
@@ -106,7 +107,7 @@ function Swipe({ user }) {
   const p = profiles[currentIndex];
   const remainingProfiles = profiles.length - currentIndex - 1;
   const userImages = p.images && p.images.length > 0 ? p.images : (p.image ? [p.image] : []);
-  const imgSrc = userImages.length > 0 ? (userImages[photoIndex].startsWith('http') ? userImages[photoIndex] : `http://localhost:5000${userImages[photoIndex]}`) : profileImageUrl(p);
+  const imgSrc = userImages.length > 0 ? absoluteApiUrl(userImages[photoIndex]) : profileImageUrl(p);
   
   const interests = Array.isArray(p.interests) ? p.interests : [];
   const ageStr = p.age != null ? `${p.age}` : '';

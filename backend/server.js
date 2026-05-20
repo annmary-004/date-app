@@ -5,10 +5,27 @@ const cors = require("cors");
 
 const app = express();
 
-app.use(cors({
-  origin: ["http://localhost:3000", "https://date-app-frontend.vercel.app"], // Placeholder, will need user's actual Vercel URL
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://date-app-frontend.vercel.app"
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    const isAllowed = allowedOrigins.includes(origin) || 
+                      origin.endsWith(".vercel.app") || 
+                      origin.startsWith("http://localhost:");
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true
-}));
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 const path = require("path");
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
@@ -31,7 +48,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: { 
-    origin: ["http://localhost:3000", "https://date-app-frontend.vercel.app"],
+    origin: corsOptions.origin,
     methods: ["GET", "POST"]
   }
 });
