@@ -68,7 +68,8 @@ router.post("/login", async (req, res) => {
   }
   await user.save();
 
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+  const jwtSecret = process.env.JWT_SECRET || "dateapp_secret_key_2026";
+  const token = jwt.sign({ id: user._id }, jwtSecret);
 
   const safe = user.toObject();
   delete safe.password;
@@ -131,7 +132,8 @@ router.post("/google", async (req, res) => {
       console.log("Existing Google user found:", email);
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+    const jwtSecret = process.env.JWT_SECRET || "dateapp_secret_key_2026";
+  const token = jwt.sign({ id: user._id }, jwtSecret);
     const safe = user.toObject();
     delete safe.password;
     res.json({ token, user: safe });
