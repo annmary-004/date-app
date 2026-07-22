@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Briefcase, GraduationCap, MapPin, Settings, UserPen, Camera, Shield } from 'lucide-react';
+import { Briefcase, GraduationCap, MapPin, Settings, UserPen, Camera, Shield, Heart, ChevronRight } from 'lucide-react';
 import { absoluteApiUrl } from '../config';
+import './profile.css';
 
 function avatarOf(user) {
   if (user.image) return absoluteApiUrl(user.image);
@@ -34,15 +35,23 @@ function Profile({ user }) {
     if (photoIndex > 0) setPhotoIndex(prev => prev - 1);
   };
 
+  const isPremium = user.subscriptionPlan && user.subscriptionPlan !== 'free';
+
   return (
-    <div className="screen profile-screen">
-      <section className="glass-panel profile-hero">
-        <div className="profile-avatar" style={{position: 'relative', overflow: 'hidden', padding: 0}}>
-          <img src={imgSrc} alt={user.name} style={{width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'inherit'}} />
+    <div className="profile-screen-container">
+      {/* Premium Profile Hero Card */}
+      <section className="premium-profile-hero">
+        <div className="profile-avatar-container">
+          <img className="profile-avatar-image" src={imgSrc} alt={user.name} />
+          
           {userImages.length > 1 && (
-            <div style={{position: 'absolute', top: '8px', left: 0, right: 0, display: 'flex', gap: '4px', padding: '0 12px', zIndex: 10, justifyContent: 'center'}}>
+            <div className="profile-photo-indicators">
               {userImages.map((_, i) => (
-                <div key={i} style={{flex: 1, height: '4px', background: i === photoIndex ? '#fff' : 'rgba(255,255,255,0.4)', borderRadius: '2px'}} />
+                <div 
+                  key={i} 
+                  className="profile-photo-indicator"
+                  style={{ background: i === photoIndex ? '#ffffff' : 'rgba(255,255,255,0.4)' }}
+                />
               ))}
             </div>
           )}
@@ -53,17 +62,40 @@ function Profile({ user }) {
             </>
           )}
         </div>
-        <div className="profile-hero-copy">
-          <span className="eyebrow">Profile</span>
-          <h2>
+
+        <div className="premium-profile-hero-info">
+          <div className="profile-badge-row">
+            {isPremium ? (
+              <span className="profile-membership-badge premium">
+                <Heart size={10} fill="currentColor" /> Premium
+              </span>
+            ) : (
+              <span className="profile-membership-badge free">Free Member</span>
+            )}
+          </div>
+
+          <h2 className="profile-name-age">
             {user.name}
             {user.age ? `, ${user.age}` : ''}
           </h2>
-          <p>{user.bio || 'Add a bio so people can know your vibe.'}</p>
+
+          <p className="profile-bio-text">{user.bio || 'Add a bio so people can know your vibe.'}</p>
+          
+          <div className="profile-subscription-detail">
+            {isPremium && user.subscriptionExpiresAt ? (
+              <span>
+                Subscribed to <strong>{user.subscriptionPlan}</strong> plan until{' '}
+                <strong>{new Date(user.subscriptionExpiresAt).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' })}</strong>
+              </span>
+            ) : (
+              <span>Free tier access: unlimited swipes & basic matches.</span>
+            )}
+          </div>
+
           {chips.length > 0 && (
-            <div className="profile-chip-row">
+            <div className="profile-tags-container">
               {chips.map((chip) => (
-                <span key={chip} className="profile-chip">
+                <span key={chip} className="premium-profile-tag">
                   {chip}
                 </span>
               ))}
@@ -72,62 +104,111 @@ function Profile({ user }) {
         </div>
       </section>
 
-      <section className="profile-grid">
-        <article className="glass-panel profile-panel">
-          <h3>About</h3>
-          <ul className="profile-list">
-            <li>
-              <MapPin size={16} />
-              <span>{user.city || 'City not set'}</span>
-            </li>
-            <li>
-              <Briefcase size={16} />
-              <span>{user.occupation || 'Occupation not set'}</span>
-            </li>
-            <li>
-              <GraduationCap size={16} />
-              <span>{user.education || 'Education not set'}</span>
-            </li>
-          </ul>
-        </article>
+      {/* Profile Details & Actions Layout */}
+      <div className="premium-profile-grid">
+        {/* Left Column: About & Interests */}
+        <div className="premium-profile-col">
+          <article className="premium-profile-card">
+            <h3>
+              <MapPin size={18} /> About Me
+            </h3>
+            <ul className="premium-about-list">
+              <li className="premium-about-item">
+                <MapPin size={16} />
+                <span className="premium-about-label">Lives in:</span>
+                <span>{user.city || 'Not set'}</span>
+              </li>
+              <li className="premium-about-item">
+                <Briefcase size={16} />
+                <span className="premium-about-label">Occupation:</span>
+                <span>{user.occupation || 'Not set'}</span>
+              </li>
+              <li className="premium-about-item">
+                <GraduationCap size={16} />
+                <span className="premium-about-label">Education:</span>
+                <span>{user.education || 'Not set'}</span>
+              </li>
+            </ul>
+          </article>
 
-        <article className="glass-panel profile-panel">
-          <h3>Interests</h3>
-          {interests.length > 0 ? (
-            <div className="profile-chip-row">
-              {interests.map((item) => (
-                <span key={item} className="profile-chip profile-chip-soft">
-                  {item}
-                </span>
-              ))}
+          <article className="premium-profile-card">
+            <h3>
+              <Heart size={18} fill="currentColor" /> Interests
+            </h3>
+            {interests.length > 0 ? (
+              <div className="interests-grid-chips">
+                {interests.map((item) => (
+                  <span key={item} className="premium-interest-chip">
+                    {item}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <p className="profile-empty-text">No interests added yet.</p>
+            )}
+          </article>
+        </div>
+
+        {/* Right Column: Actions */}
+        <div className="premium-profile-col">
+          <article className="premium-profile-card">
+            <h3>Actions</h3>
+            <div className="premium-actions-list">
+              <Link to="/profile/photos" className="premium-action-card-link">
+                <div className="action-content">
+                  <div className="action-icon-wrapper">
+                    <Camera size={18} />
+                  </div>
+                  <span>Edit photos</span>
+                </div>
+                <ChevronRight size={16} className="chevron-icon" />
+              </Link>
+              
+              <Link to="/profile/edit" className="premium-action-card-link">
+                <div className="action-content">
+                  <div className="action-icon-wrapper">
+                    <UserPen size={18} />
+                  </div>
+                  <span>Edit profile details</span>
+                </div>
+                <ChevronRight size={16} className="chevron-icon" />
+              </Link>
+              
+              <Link to="/settings" className="premium-action-card-link">
+                <div className="action-content">
+                  <div className="action-icon-wrapper">
+                    <Settings size={18} />
+                  </div>
+                  <span>Preferences (Distance & Age)</span>
+                </div>
+                <ChevronRight size={16} className="chevron-icon" />
+              </Link>
+
+              <Link to="/security" className="premium-action-card-link">
+                <div className="action-content">
+                  <div className="action-icon-wrapper">
+                    <Shield size={18} />
+                  </div>
+                  <span>Privacy & Security</span>
+                </div>
+                <ChevronRight size={16} className="chevron-icon" />
+              </Link>
+
+              {!isPremium && (
+                <Link to="/payment" className="premium-upgrade-card-link">
+                  <div className="action-content">
+                    <div className="action-icon-wrapper">
+                      <Heart size={18} fill="currentColor" />
+                    </div>
+                    <span>Upgrade to Premium</span>
+                  </div>
+                  <ChevronRight size={16} className="chevron-icon" />
+                </Link>
+              )}
             </div>
-          ) : (
-            <p className="profile-muted">No interests added yet.</p>
-          )}
-        </article>
-
-        <article className="glass-panel profile-panel profile-panel-actions">
-          <h3>Profile actions</h3>
-          <div style={{display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '14px'}}>
-            <Link to="/profile/photos" className="btn-icon profile-action-link" style={{justifyContent: 'flex-start', padding: '12px 16px', background: 'var(--surface-strong)', color: 'var(--text-main)', border: '1px solid var(--line)'}}>
-              <Camera size={18} />
-              <span>Edit photos</span>
-            </Link>
-            <Link to="/profile/edit" className="btn-icon profile-action-link" style={{justifyContent: 'flex-start', padding: '12px 16px', background: 'var(--surface-strong)', color: 'var(--text-main)', border: '1px solid var(--line)'}}>
-              <UserPen size={18} />
-              <span>Edit profile details</span>
-            </Link>
-            <Link to="/settings" className="btn-icon profile-action-link" style={{justifyContent: 'flex-start', padding: '12px 16px', background: 'var(--surface-strong)', color: 'var(--text-main)', border: '1px solid var(--line)'}}>
-              <Settings size={18} />
-              <span>Preferences (Distance & Age)</span>
-            </Link>
-            <Link to="/security" className="btn-icon profile-action-link" style={{justifyContent: 'flex-start', padding: '12px 16px', background: 'var(--surface-strong)', color: 'var(--text-main)', border: '1px solid var(--line)'}}>
-              <Shield size={18} />
-              <span>Privacy & Security</span>
-            </Link>
-          </div>
-        </article>
-      </section>
+          </article>
+        </div>
+      </div>
     </div>
   );
 }

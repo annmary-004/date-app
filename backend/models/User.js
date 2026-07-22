@@ -33,8 +33,15 @@ const userSchema = new mongoose.Schema({
   emailNotifications: { type: Boolean, default: false },
   incognitoMode: { type: Boolean, default: false },
 
+  subscriptionPlan: { type: String, enum: ["free", "weekly", "monthly", "yearly"], default: "free" },
+  subscriptionExpiresAt: { type: Date, default: null },
+
   likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  matches: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }]
+  matches: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+
+  role: { type: String, enum: ["user", "admin"], default: "user" },
+  createdAt: { type: Date, default: Date.now },
+  lastLogin: { type: Date, default: Date.now }
 });
 
 module.exports = mongoose.model("User", userSchema);

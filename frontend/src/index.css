@@ -16,6 +16,142 @@
   --pass: #f43f5e;
 }
 
+/* ============================================
+   DARK THEME — applied via html.dark-theme
+   ============================================ */
+html.dark-theme,
+html.dark-theme body {
+  --bg: #0d0b0a;
+  --surface: rgba(20, 18, 17, 0.72);
+  --surface-strong: rgba(30, 27, 26, 0.85);
+  --line: rgba(255, 255, 255, 0.08);
+  --text-main: #fcfaf8;
+  --text-muted: #a8a29e;
+  --accent: #f43f5e;
+  --accent-soft: #fb7185;
+  --shadow: 0 20px 48px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 28px 64px rgba(0, 0, 0, 0.7);
+}
+
+html.dark-theme body {
+  background:
+    radial-gradient(circle at 12% 18%, rgba(236, 72, 153, 0.12), transparent 40%),
+    radial-gradient(circle at 88% 8%, rgba(249, 115, 22, 0.1), transparent 36%),
+    linear-gradient(180deg, #141211 0%, #0d0b0a 100%) !important;
+  color: #fcfaf8;
+}
+
+html.dark-theme .glass-panel {
+  background: rgba(20, 18, 17, 0.72) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+html.dark-theme h1,
+html.dark-theme h2,
+html.dark-theme h3,
+html.dark-theme h4 {
+  color: #f1f5f9 !important;
+}
+
+html.dark-theme p {
+  color: #cbd5e1 !important;
+}
+
+html.dark-theme span {
+  color: inherit;
+}
+
+html.dark-theme label {
+  color: #e2e8f0 !important;
+}
+
+html.dark-theme input,
+html.dark-theme textarea,
+html.dark-theme select {
+  background: #2a2a2a !important;
+  color: #f1f5f9 !important;
+  border-color: rgba(255,255,255,0.12) !important;
+}
+
+html.dark-theme input::placeholder,
+html.dark-theme textarea::placeholder {
+  color: #64748b !important;
+}
+
+html.dark-theme p strong {
+  color: #e2e8f0 !important;
+}
+
+/* Navbar dark */
+html.dark-theme .navbar {
+  background: rgba(15, 15, 15, 0.97) !important;
+  border-top-color: rgba(255,255,255,0.08) !important;
+}
+
+html.dark-theme .nav-label {
+  color: #94a3b8 !important;
+}
+
+html.dark-theme .nav-item.active .nav-label {
+  color: #f43f5e !important;
+}
+
+/* Buttons dark */
+html.dark-theme button:not([class*="btn-primary"]):not([class*="send-btn"]) {
+  color: #f1f5f9;
+}
+
+/* Chat dark */
+html.dark-theme .chat-header {
+  background: var(--surface) !important;
+  border-bottom-color: rgba(255,255,255,0.08) !important;
+}
+
+html.dark-theme .message.received {
+  background: var(--surface-strong) !important;
+  color: var(--text-main) !important;
+}
+
+html.dark-theme .chat-input {
+  background: var(--surface) !important;
+  border-top-color: rgba(255,255,255,0.08) !important;
+}
+
+html.dark-theme .chat-shell {
+  background: var(--surface) !important;
+}
+
+/* Profile page dark */
+html.dark-theme .auth-card,
+html.dark-theme .profile-panel,
+html.dark-theme .edit-panel {
+  background: var(--surface) !important;
+  color: var(--text-main) !important;
+}
+
+html.dark-theme .preference-block {
+  background: var(--surface-strong) !important;
+  border-color: rgba(255,255,255,0.06) !important;
+}
+
+html.dark-theme .setting-toggle span {
+  color: #e2e8f0 !important;
+}
+
+/* Screen hero copy dark */
+html.dark-theme .hero-copy h2,
+html.dark-theme .hero-copy p,
+html.dark-theme .screen-hero p {
+  color: #f1f5f9 !important;
+}
+
+/* App container dark */
+html.dark-theme .app-container {
+  background: transparent !important;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -35,6 +171,7 @@ body {
     linear-gradient(180deg, #faf8f6 0%, #f3f1ee 100%);
   color: var(--text-main);
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 body,
@@ -1281,17 +1418,17 @@ img {
   bottom: 20px;
   z-index: 10;
   transform: translateX(-50%);
-  width: min(460px, calc(100% - 24px));
+  width: min(500px, calc(100% - 20px));
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 8px;
-  padding: 10px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  padding: 6px;
   border: 1px solid var(--line);
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.94);
-  box-shadow: var(--shadow-lg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.90);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .nav-item {
@@ -1299,13 +1436,13 @@ img {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  min-height: 58px;
-  border-radius: 20px;
+  gap: 3px;
+  min-height: 48px;
+  border-radius: 12px;
   color: var(--text-muted);
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
+  transition: all 0.2s ease;
 }
 
 .profile-screen {

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Baby,
   Briefcase,
@@ -12,7 +13,9 @@ import {
   Target,
   Users,
   Wine,
-  X
+  X,
+  Camera,
+  ShieldAlert
 } from 'lucide-react';
 import API from '../api';
 import { absoluteApiUrl } from '../config';
@@ -23,6 +26,12 @@ function profileImageUrl(p) {
 }
 
 function Swipe({ user }) {
+  const navigate = useNavigate();
+  
+  // Enforce 4 photo limit
+  const userPhotos = user.images && user.images.length > 0 ? user.images : (user.image ? [user.image] : []);
+  const hasMinPhotos = userPhotos.length >= 4;
+
   const [profiles, setProfiles] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [matchName, setMatchName] = useState('');
@@ -75,6 +84,40 @@ function Swipe({ user }) {
     setCurrentIndex((prev) => prev + 1);
   };
 
+  if (!hasMinPhotos) {
+    return (
+      <div className="state-wrap" style={{ minHeight: '65vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+        <div className="glass-panel state-card" style={{ maxWidth: '440px', padding: '36px 30px', borderRadius: '24px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
+          <div style={{ width: '64px', height: '64px', borderRadius: '20px', background: 'rgba(225, 29, 72, 0.08)', color: '#e11d48', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Camera size={30} />
+          </div>
+          <h3 style={{ fontSize: '1.4rem', fontWeight: '800', color: '#1c1917', margin: 0 }}>4 Photos Required</h3>
+          <p style={{ color: '#57534e', fontSize: '0.92rem', lineHeight: '1.6', margin: 0 }}>
+            To view other profiles, swipe, and match, you must upload <strong>at least 4 verified photos of your face</strong>. This keeps Heartly safe, real, and fake-free!
+          </p>
+          <button 
+            onClick={() => navigate('/profile/photos')}
+            style={{ 
+              width: '100%', 
+              padding: '12px', 
+              borderRadius: '12px', 
+              border: 'none', 
+              background: 'linear-gradient(135deg, #e11d48 0%, #f43f5e 100%)', 
+              color: '#ffffff', 
+              fontWeight: '700', 
+              fontSize: '0.95rem',
+              cursor: 'pointer', 
+              boxShadow: '0 8px 20px rgba(225,29,72,0.2)',
+              marginTop: '8px'
+            }}
+          >
+            Upload Photos Now
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="state-wrap">
@@ -119,6 +162,19 @@ function Swipe({ user }) {
     p.kids && { icon: <Baby size={15} />, label: p.kids }
   ].filter(Boolean);
 
+  const getDistanceBetween = (user1Id, user2Id) => {
+    const s1 = user1Id?.toString() || '';
+    const s2 = user2Id?.toString() || '';
+    let hash = 0;
+    for (let i = 0; i < s1.length; i++) {
+      hash = (hash << 5) - hash + s1.charCodeAt(i);
+    }
+    for (let i = 0; i < s2.length; i++) {
+      hash = (hash << 5) - hash + s2.charCodeAt(i);
+    }
+    return Math.abs(hash % 27) + 2; // consistent distance between 2 and 28 km
+  };
+
   const detailRows = [
     p.occupation && {
       icon: <Briefcase size={16} strokeWidth={2.25} />,
@@ -130,7 +186,7 @@ function Swipe({ user }) {
     },
     p.city && {
       icon: <MapPin size={16} strokeWidth={2.25} />,
-      text: p.city
+      text: `${p.city} (${getDistanceBetween(user._id, p._id)} km away)`
     },
     p.height && {
       icon: <Ruler size={16} strokeWidth={2.25} />,

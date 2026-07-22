@@ -33,6 +33,7 @@ app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/match", require("./routes/matchRoutes"));
 app.use("/api/chat", require("./routes/chatRoutes"));
 app.use("/api/user", require("./routes/userRoutes"));
+app.use("/api/admin", require("./routes/adminRoutes"));
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("DB connected"))

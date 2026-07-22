@@ -48,7 +48,7 @@ function Onboarding({ user, setUser }) {
 
   const validateStep = () => {
     const value = form[current.key];
-    if (['gender', 'sexualOrientation', 'showMe', 'age'].includes(current.key) && !String(value).trim()) {
+    if (!String(value).trim()) {
       setError('Please fill this field to continue.');
       return false;
     }

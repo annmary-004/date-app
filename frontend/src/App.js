@@ -12,7 +12,10 @@ import Profile from './pages/Profile';
 import EditProfile from './pages/EditProfile';
 import Settings from './pages/Settings';
 import Security from './pages/Security';
+import Payment from './pages/Payment';
 import EditPhotos from './pages/EditPhotos';
+import AdminLogin from './pages/AdminLogin';
+import AdminDashboard from './pages/AdminDashboard';
 import Navbar from './components/Navbar';
 import './index.css';
 
@@ -28,6 +31,45 @@ function App() {
     } catch (error) {
       localStorage.removeItem('user');
     }
+  }, []);
+
+  useEffect(() => {
+    const applyTheme = () => {
+      const themePref = localStorage.getItem('themePreference') || 'system';
+      const root = document.documentElement;
+      
+      root.classList.remove('dark-theme');
+      document.body.classList.remove('dark-theme');
+      
+      if (themePref === 'dark') {
+        root.classList.add('dark-theme');
+        document.body.classList.add('dark-theme');
+      } else if (themePref === 'system') {
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          root.classList.add('dark-theme');
+          document.body.classList.add('dark-theme');
+        }
+      }
+    };
+
+    applyTheme();
+    window.addEventListener('themeChange', applyTheme);
+    window.addEventListener('storage', applyTheme);
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleSystemChange = () => {
+      const themePref = localStorage.getItem('themePreference') || 'system';
+      if (themePref === 'system') {
+        applyTheme();
+      }
+    };
+    mediaQuery.addEventListener('change', handleSystemChange);
+
+    return () => {
+      window.removeEventListener('themeChange', applyTheme);
+      window.removeEventListener('storage', applyTheme);
+      mediaQuery.removeEventListener('change', handleSystemChange);
+    };
   }, []);
 
   const firstName = user?.name?.split(' ')[0] || 'there';
@@ -64,7 +106,10 @@ function App() {
             <Route path="/profile/edit" element={user ? (needsOnboarding ? <Navigate to="/onboarding" /> : <EditProfile user={user} setUser={setUser} />) : <Navigate to="/login" />} />
             <Route path="/profile/photos" element={user ? (needsOnboarding ? <Navigate to="/onboarding" /> : <EditPhotos user={user} setUser={setUser} />) : <Navigate to="/login" />} />
             <Route path="/settings" element={user ? (needsOnboarding ? <Navigate to="/onboarding" /> : <Settings user={user} setUser={setUser} />) : <Navigate to="/login" />} />
+            <Route path="/payment" element={user ? (needsOnboarding ? <Navigate to="/onboarding" /> : <Payment user={user} setUser={setUser} />) : <Navigate to="/login" />} />
             <Route path="/security" element={user ? (needsOnboarding ? <Navigate to="/onboarding" /> : <Security user={user} />) : <Navigate to="/login" />} />
+            <Route path="/admin" element={<AdminLogin />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard user={user} />} />
           </Routes>
         </main>
 
