@@ -9,9 +9,12 @@ const path = require("path");
 const crypto = require("crypto");
 const Razorpay = require("razorpay");
 
+const razorpayKeyId = process.env.RAZORPAY_KEY_ID || "rzp_test_dummykey123";
+const razorpayKeySecret = process.env.RAZORPAY_KEY_SECRET || "dummysecretkey123";
+
 const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET
+  key_id: razorpayKeyId,
+  key_secret: razorpayKeySecret
 });
 
 const storage = multer.diskStorage({
