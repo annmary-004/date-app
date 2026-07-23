@@ -1,8 +1,7 @@
 {
+  "framework": "create-react-app",
+  "buildCommand": "npm run build",
   "outputDirectory": "build",
-  "env": {
-    "REACT_APP_API_URL": "https://date-app-backend-stum.onrender.com"
-  },
   "rewrites": [
     {
       "source": "/(.*)",
