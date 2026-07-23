@@ -9,13 +9,11 @@ import {
   Heart,
   MapPin,
   Ruler,
-  Sparkles,
   Target,
   Users,
   Wine,
   X,
-  Camera,
-  ShieldAlert
+  Camera
 } from 'lucide-react';
 import API from '../api';
 import { absoluteApiUrl } from '../config';

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   ArrowLeft, Send, Camera, MoreVertical, Mic, Image as ImageIcon,
-  Video, MapPin, Edit2, X, Plus, Crown, PhoneCall, Clock
+  Video, MapPin, Edit2, X, Plus, Crown, Clock
 } from 'lucide-react';
 import { io } from 'socket.io-client';
 import API from '../api';

@@ -1,8 +1,9 @@
 {
-  "buildCommand": "cd frontend && npm install && npm run build",
+  "buildCommand": "CI=false cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/build",
   "framework": "create-react-app",
   "env": {
+    "CI": "false",
     "REACT_APP_API_URL": "https://date-app-backend-stum.onrender.com"
   },
   "rewrites": [
