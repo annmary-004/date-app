@@ -1,5 +1,5 @@
 {
-  "buildCommand": "CI=false cd frontend && npm install && npm run build",
+  "buildCommand": "npm run build --prefix frontend",
   "outputDirectory": "frontend/build",
   "framework": "create-react-app",
   "env": {

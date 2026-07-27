@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Heart, MessageCircle, Camera, Crown, Clock, Sparkles, ChevronRight } from 'lucide-react';
+import { MessageCircle, Camera, Crown, Clock, Sparkles, ChevronRight } from 'lucide-react';
 import API from '../api';
 import { absoluteApiUrl } from '../config';
 
@@ -93,7 +93,6 @@ function Matches({ user }) {
 
   // Separate: new matches (no messages yet — simulated by matchedAt present) vs conversations
   const newMatches = matches.filter(m => !m.isExpired);
-  const expiredMatches = matches.filter(m => m.isExpired);
 
   return (
     <div style={{ maxWidth: '700px', margin: '0 auto', padding: '0 0 100px' }}>

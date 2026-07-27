@@ -98,7 +98,7 @@ function EditPhotos({ user, setUser }) {
             }}>
               <img 
                 src={absoluteApiUrl(img)} 
-                alt={`Profile photo ${idx + 1}`} 
+                alt={`Profile ${idx + 1}`} 
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                 onError={(e) => {
                   e.target.onerror = null;

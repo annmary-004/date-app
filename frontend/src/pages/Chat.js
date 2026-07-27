@@ -635,7 +635,7 @@ function Chat({ user }) {
             onTouchStart={startRecording}
             onTouchEnd={stopRecording}
             style={{
-              width: '40px', height: '40px', borderRadius: '50%', border: 'none',
+              width: '40px', height: '40px', borderRadius: '50%',
               background: recording ? 'linear-gradient(135deg, #e11d48, #f43f5e)' : 'var(--surface-strong)',
               border: '1px solid var(--line)',
               color: recording ? '#fff' : 'var(--text-muted)',

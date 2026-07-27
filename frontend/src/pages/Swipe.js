@@ -9,6 +9,7 @@ import {
   Heart,
   MapPin,
   Ruler,
+  Sparkles,
   Target,
   Users,
   Wine,
