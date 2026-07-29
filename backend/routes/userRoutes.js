@@ -216,8 +216,10 @@ const subscriptionPlans = {
 
 router.post("/subscribe/:userId", async (req, res) => {
   try {
-    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET || process.env.RAZORPAY_KEY_ID.includes('your_') || process.env.RAZORPAY_KEY_SECRET.includes('your_')) {
-      return res.status(500).json({ error: "Razorpay is not configured. Set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in backend/.env." });
+    const keyId = process.env.RAZORPAY_KEY_ID;
+    const keySecret = process.env.RAZORPAY_KEY_SECRET;
+    if (!keyId || !keySecret || !keyId.startsWith('rzp_')) {
+      return res.status(500).json({ error: "Razorpay is not configured. Please contact support." });
     }
 
     const { plan } = req.body;
@@ -265,7 +267,7 @@ router.post("/verify-payment/:userId", async (req, res) => {
     }
 
     const expectedSignature = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET || razorpayKeySecret)
       .update(`${razorpay_order_id}|${razorpay_payment_id}`)
       .digest("hex");
 
