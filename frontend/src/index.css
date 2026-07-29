@@ -1119,15 +1119,27 @@ img {
 }
 
 .btn-icon.like {
-  border-color: rgba(34, 197, 94, 0.35);
-  background: linear-gradient(180deg, #ecfdf5 0%, #d1fae5 100%);
-  color: #14532d;
+  border: none !important;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 10px 24px rgba(16, 185, 129, 0.4) !important;
+}
+
+.btn-icon.like span,
+.btn-icon.like svg {
+  color: #ffffff !important;
 }
 
 .btn-icon.dislike {
-  border-color: rgba(244, 63, 94, 0.3);
-  background: linear-gradient(180deg, #fff1f2 0%, #ffe4e6 100%);
-  color: #9f1239;
+  border: none !important;
+  background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 10px 24px rgba(244, 63, 94, 0.4) !important;
+}
+
+.btn-icon.dislike span,
+.btn-icon.dislike svg {
+  color: #ffffff !important;
 }
 
 .action-caption {

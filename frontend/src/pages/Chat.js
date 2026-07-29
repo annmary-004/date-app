@@ -389,7 +389,7 @@ function Chat({ user }) {
               background: 'var(--surface)', border: '1px solid var(--line)',
               color: 'var(--text-muted)', fontSize: '0.83rem', fontWeight: '600'
             }}>
-              👋 Say hi and break the ice!
+              Say hi and break the ice!
             </div>
           </div>
         )}

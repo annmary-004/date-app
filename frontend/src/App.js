@@ -84,12 +84,6 @@ function App() {
         <div className="app-noise" />
 
         <main className={`main-content ${user ? 'main-content-auth' : 'main-content-guest'}`}>
-          {user && !needsOnboarding && (
-            <header className="app-topbar-simple">
-              <h1>Hi, {firstName}</h1>
-            </header>
-          )}
-
           <Routes>
             <Route path="/" element={user ? (needsOnboarding ? <Navigate to="/onboarding" /> : <Swipe user={user} />) : <Landing />} />
             <Route path="/login" element={user ? <Navigate to="/" /> : <Login setUser={setUser} />} />

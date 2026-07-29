@@ -114,7 +114,7 @@ function Matches({ user }) {
         </div>
       ) : matches.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '60px 24px', color: 'var(--text-muted)' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '16px' }}>💫</div>
+          <Sparkles size={40} style={{ color: 'var(--text-muted)', margin: '0 auto 16px', display: 'block' }} />
           <h3 style={{ fontWeight: '800', margin: '0 0 8px' }}>No matches yet</h3>
           <p style={{ fontSize: '0.9rem', margin: 0 }}>Keep swiping to find your match!</p>
           <button onClick={() => navigate('/')} style={{
@@ -250,7 +250,7 @@ function Matches({ user }) {
                       overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'
                     }}>
                       {match.isExpired
-                        ? '🔒 Upgrade to Premium to continue chatting'
+                        ? 'Upgrade to Premium to continue chatting'
                         : (match.bio || cityText || 'Tap to start chatting...')}
                     </p>
                   </div>
