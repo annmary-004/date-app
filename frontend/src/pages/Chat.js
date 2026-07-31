@@ -254,7 +254,7 @@ function Chat({ user }) {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: 'var(--bg)' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', position: 'fixed', inset: 0, zIndex: 9999, background: 'var(--bg)' }}>
       
       {/* ── HEADER ── */}
         <div style={{
