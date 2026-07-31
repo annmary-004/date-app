@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Save, MapPin, User, EyeOff, Bell, Trash2, AlertTriangle, X } from 'lucide-react';
+import { ArrowLeft, Save, MapPin, User, EyeOff, Bell, Trash2, AlertTriangle, X, Sun, Moon, Monitor } from 'lucide-react';
 import API from '../api';
 
 function Settings({ user, setUser }) {
@@ -274,7 +274,7 @@ function Settings({ user, setUser }) {
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'
                 }}
               >
-                ☀️ Light
+                <Sun size={18} /> Light
               </button>
               <button 
                 type="button"
@@ -287,7 +287,7 @@ function Settings({ user, setUser }) {
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'
                 }}
               >
-                🌙 Dark
+                <Moon size={18} /> Dark
               </button>
               <button 
                 type="button"
@@ -300,7 +300,7 @@ function Settings({ user, setUser }) {
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'
                 }}
               >
-                💻 System
+                <Monitor size={18} /> System
               </button>
             </div>
           </div>
