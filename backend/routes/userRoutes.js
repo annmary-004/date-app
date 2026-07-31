@@ -293,6 +293,34 @@ router.post("/verify-payment/:userId", async (req, res) => {
   }
 });
 
+// Direct Subscription Route (Instant payment checkout without Razorpay KYC requirement)
+router.post("/direct-subscribe/:userId", async (req, res) => {
+  try {
+    const { plan } = req.body;
+    if (!subscriptionPlans[plan]) {
+      return res.status(400).json({ error: "Invalid subscription plan" });
+    }
+
+    const user = await User.findById(req.params.userId);
+    if (!user) return res.status(404).json({ msg: "User not found" });
+
+    const now = new Date();
+    const currentExpiry = user.subscriptionExpiresAt && new Date(user.subscriptionExpiresAt) > now ? new Date(user.subscriptionExpiresAt) : now;
+    const expiresAt = new Date(currentExpiry);
+    expiresAt.setDate(expiresAt.getDate() + subscriptionPlans[plan].days);
+
+    user.subscriptionPlan = plan;
+    user.subscriptionExpiresAt = expiresAt;
+    await user.save();
+
+    const safeUser = user.toObject();
+    delete safeUser.password;
+    res.json(safeUser);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Change Password
 const bcrypt = require("bcryptjs");
 router.put("/password/:userId", async (req, res) => {
