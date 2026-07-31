@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MessageCircle, Camera, Crown, Clock, Sparkles, ChevronRight, User } from 'lucide-react';
+import { MessageCircle, Camera, Crown, Clock, Sparkles, ChevronRight, User, Heart } from 'lucide-react';
 import API from '../api';
 import { absoluteApiUrl } from '../config';
 
