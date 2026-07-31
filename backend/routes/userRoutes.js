@@ -440,9 +440,9 @@ router.delete("/photos/:userId", async (req, res) => {
       ? user.images 
       : (user.image ? [user.image] : []);
 
-    // Enforce 4 photo limit
-    if (currentImages.length <= 4) {
-      return res.status(400).json({ error: "Safety Rule: You must maintain at least 4 verified photos to use your account." });
+    // Enforce 1 photo minimum limit
+    if (currentImages.length <= 1) {
+      return res.status(400).json({ error: "You must maintain at least 1 photo." });
     }
 
     const updatedImages = currentImages.filter(img => img !== imageUrl);
