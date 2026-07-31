@@ -254,21 +254,9 @@ function Chat({ user }) {
   }
 
   return (
-    <div style={{ maxWidth: '620px', margin: '0 auto', padding: '16px 12px 100px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: 'var(--bg)' }}>
       
-      {/* ── CARD CONTAINER FOR CHAT PAGE ── */}
-      <div style={{
-        background: 'var(--surface)',
-        borderRadius: '28px',
-        border: '1px solid var(--line)',
-        boxShadow: '0 20px 60px rgba(0,0,0,0.12)',
-        overflow: 'hidden',
-        display: 'flex',
-        flexDirection: 'column',
-        height: 'calc(100vh - 120px)'
-      }}>
-
-        {/* ── HEADER ── */}
+      {/* ── HEADER ── */}
         <div style={{
           display: 'flex', alignItems: 'center', gap: '12px',
           padding: '14px 16px',
@@ -699,7 +687,6 @@ function Chat({ user }) {
           </button>
         )}
       </form>
-      </div>
     </div>
   );
 }
