@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Crown, Check, Shield, AlertTriangle, CreditCard, QrCode, Smartphone, Sparkles, X } from 'lucide-react';
 import API from '../api';
@@ -48,6 +48,11 @@ function Payment({ user, setUser }) {
   const [subError, setSubError] = useState('');
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
 
+  useEffect(() => {
+    // Preload Razorpay SDK script on component mount for instant mobile response
+    loadRazorpayScript();
+  }, []);
+
   if (!user || !user._id) {
     return (
       <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -57,11 +62,6 @@ function Payment({ user, setUser }) {
   }
 
   const isPremium = user.subscriptionExpiresAt && new Date(user.subscriptionExpiresAt) > new Date();
-
-  useEffect(() => {
-    // Preload Razorpay SDK script on component mount for instant mobile response
-    loadRazorpayScript();
-  }, []);
 
   const handleOpenCheckout = (plan) => {
     setSelectedPlan(plan);
