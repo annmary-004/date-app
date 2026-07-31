@@ -1,11 +1,12 @@
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { Compass, CreditCard, Heart, LogOut, UserCircle2 } from 'lucide-react';
 
 function Navbar({ setUser }) {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  if (window.location.pathname.startsWith('/admin')) {
+  if (location.pathname.startsWith('/admin') || location.pathname.startsWith('/chat')) {
     return null;
   }
 
