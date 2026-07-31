@@ -88,7 +88,7 @@ function Onboarding({ user, setUser }) {
 
   return (
     <div className="onboarding-wrap">
-      <section className="glass-panel onboarding-card">
+      <section className="onboarding-card">
         <div className="onboarding-progress">
           <div className="onboarding-progress-bar" style={{ width: `${progress}%` }} />
         </div>
