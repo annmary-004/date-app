@@ -94,7 +94,7 @@ function Matches({ user }) {
   const newMatches = matches.filter(m => !m.isExpired);
 
   return (
-    <div style={{ maxWidth: '620px', margin: '0 auto', padding: '16px 12px 120px' }}>
+    <div style={{ position: 'fixed', inset: 0, zIndex: 5, padding: '24px 16px 120px', overflowY: 'auto' }}>
       
         {/* Header */}
         <div style={{ marginBottom: '20px' }}>
