@@ -13,7 +13,7 @@ function Navbar({ setUser }) {
   const handleLogout = () => {
     localStorage.clear();
     setUser(null);
-    navigate('/');
+    window.location.href = '/';
   };
 
   return (
