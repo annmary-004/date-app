@@ -71,18 +71,19 @@ router.get("/matches/:userId", async (req, res) => {
       if (matchMeta) {
         matchObj.matchedAt = matchMeta.matchedAt; // expose matchedAt for frontend timer
 
+        // Check if any messages exist between them
+        const hasMessaged = await Message.exists({
+          $or: [
+            { sender: user._id, receiver: match._id },
+            { sender: match._id, receiver: user._id }
+          ]
+        });
+        matchObj.hasMessaged = !!hasMessaged;
+
         const msSinceMatch = Date.now() - new Date(matchMeta.matchedAt).getTime();
         const oneDayMs = 24 * 60 * 60 * 1000;
 
         if (msSinceMatch > oneDayMs) {
-          // Check if any messages exist between them
-          const hasMessaged = await Message.exists({
-            $or: [
-              { sender: user._id, receiver: match._id },
-              { sender: match._id, receiver: user._id }
-            ]
-          });
-
           if (!hasMessaged) {
             // Show as expired to everyone — premium can unlock, free sees locked state
             matchObj.isExpired = true;

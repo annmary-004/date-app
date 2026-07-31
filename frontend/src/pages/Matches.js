@@ -91,7 +91,8 @@ function Matches({ user }) {
   const openChat = (id) => navigate(`/chat/${id}`);
   const openProfile = (id) => navigate(`/match-profile/${id}`);
 
-  const newMatches = matches.filter(m => !m.isExpired);
+  const newMatches = matches.filter(m => !m.hasMessaged && !m.isExpired);
+  const activeConversations = matches.filter(m => m.hasMessaged || m.isExpired);
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 5, padding: '24px 16px 120px', overflowY: 'auto' }}>
@@ -108,14 +109,20 @@ function Matches({ user }) {
 
         {loading ? (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '60px', flexDirection: 'column', gap: '16px' }}>
-            <div className="spinner" />
-            <p style={{ color: 'var(--text-muted)' }}>Loading your matches...</p>
+            <div className="spinner" style={{ width: '40px', height: '40px', border: '3px solid rgba(244,63,94,0.2)', borderTopColor: '#f43f5e', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+            <p style={{ color: 'var(--text-muted)', fontWeight: '600' }}>Loading matches...</p>
           </div>
         ) : matches.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '60px 24px', color: 'var(--text-muted)' }}>
-            <Sparkles size={40} style={{ color: 'var(--text-muted)', margin: '0 auto 16px', display: 'block' }} />
-            <h3 style={{ fontWeight: '800', margin: '0 0 8px' }}>No matches yet</h3>
-            <p style={{ fontSize: '0.9rem', margin: 0 }}>Keep swiping to find your match!</p>
+          <div style={{
+            padding: '40px 20px', textAlign: 'center',
+            background: 'var(--surface)', borderRadius: '24px', border: '1px solid var(--line)',
+            marginTop: '20px'
+          }}>
+            <Heart size={48} style={{ color: 'rgba(244,63,94,0.2)', marginBottom: '16px' }} />
+            <h3 style={{ fontSize: '1.3rem', fontWeight: '800', marginBottom: '8px' }}>No matches yet</h3>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', lineHeight: '1.5' }}>
+              Keep swiping! Your next great connection is out there.
+            </p>
             <button onClick={() => navigate('/')} style={{
               marginTop: '20px', padding: '12px 28px', borderRadius: '50px', border: 'none',
               background: 'linear-gradient(135deg, #e11d48, #f43f5e)',
@@ -199,7 +206,7 @@ function Matches({ user }) {
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column' }}>
-                {matches.map((match) => {
+                {activeConversations.map((match) => {
                   const distKm = getDistanceBetween(user._id, match._id);
                   const cityText = match.city ? `${match.city} · ${distKm} km away` : `${distKm} km away`;
 
@@ -243,7 +250,7 @@ function Matches({ user }) {
                       >
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                           <span style={{ fontWeight: '800', fontSize: '1rem', color: 'var(--text-main)' }}>
-                            {match.name}{match.age ? `, ${match.age}` : ''}
+                            {match.name}
                           </span>
                           {match.isExpired && (
                             <span style={{
