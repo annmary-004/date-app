@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MessageCircle, Camera, Crown, Clock, Sparkles, ChevronRight } from 'lucide-react';
+import { MessageCircle, Camera, Crown, Clock, Sparkles, ChevronRight, User } from 'lucide-react';
 import API from '../api';
 import { absoluteApiUrl } from '../config';
 
@@ -90,195 +90,222 @@ function Matches({ user }) {
   };
 
   const openChat = (id) => navigate(`/chat/${id}`);
+  const openProfile = (id) => navigate(`/user/${id}`);
 
-  // Separate: new matches (no messages yet — simulated by matchedAt present) vs conversations
+  // Separate: new matches vs conversations
   const newMatches = matches.filter(m => !m.isExpired);
 
   return (
-    <div style={{ maxWidth: '700px', margin: '0 auto', padding: '0 0 100px' }}>
-
-      {/* Header */}
-      <div style={{ padding: '20px 20px 8px' }}>
-        <h2 style={{ fontSize: '1.7rem', fontWeight: '900', margin: 0 }}>
-          Matches
-        </h2>
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', margin: '4px 0 0' }}>
-          {matches.length} {matches.length === 1 ? 'connection' : 'connections'} total
-        </p>
-      </div>
-
-      {loading ? (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '60px', flexDirection: 'column', gap: '16px' }}>
-          <div className="spinner" />
-          <p style={{ color: 'var(--text-muted)' }}>Loading your matches...</p>
+    <div style={{ maxWidth: '640px', margin: '20px auto', padding: '0 12px 120px' }}>
+      
+      {/* Elevated Glass Card Container */}
+      <div style={{
+        background: 'var(--surface)',
+        borderRadius: '28px',
+        border: '1px solid var(--line)',
+        boxShadow: '0 20px 60px rgba(0,0,0,0.1)',
+        padding: '24px 20px',
+        overflow: 'hidden'
+      }}>
+        {/* Header */}
+        <div style={{ marginBottom: '20px' }}>
+          <h2 style={{ fontSize: '1.7rem', fontWeight: '900', margin: 0, color: 'var(--text-main)' }}>
+            Matches
+          </h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', margin: '4px 0 0' }}>
+            {matches.length} {matches.length === 1 ? 'connection' : 'connections'} total
+          </p>
         </div>
-      ) : matches.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '60px 24px', color: 'var(--text-muted)' }}>
-          <Sparkles size={40} style={{ color: 'var(--text-muted)', margin: '0 auto 16px', display: 'block' }} />
-          <h3 style={{ fontWeight: '800', margin: '0 0 8px' }}>No matches yet</h3>
-          <p style={{ fontSize: '0.9rem', margin: 0 }}>Keep swiping to find your match!</p>
-          <button onClick={() => navigate('/')} style={{
-            marginTop: '20px', padding: '12px 28px', borderRadius: '50px', border: 'none',
-            background: 'linear-gradient(135deg, #e11d48, #f43f5e)',
-            color: '#fff', fontWeight: '700', cursor: 'pointer', fontSize: '0.93rem'
-          }}>Start Swiping</button>
-        </div>
-      ) : (
-        <>
-          {/* NEW MATCHES ROW — Bumble-style bubbles with countdown timer */}
-          {newMatches.length > 0 && (
-            <div style={{ padding: '12px 20px 4px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-                <Sparkles size={15} style={{ color: '#f43f5e' }} />
-                <span style={{ fontSize: '0.78rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#f43f5e' }}>
-                  New Matches
+
+        {loading ? (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '60px', flexDirection: 'column', gap: '16px' }}>
+            <div className="spinner" />
+            <p style={{ color: 'var(--text-muted)' }}>Loading your matches...</p>
+          </div>
+        ) : matches.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '60px 24px', color: 'var(--text-muted)' }}>
+            <Sparkles size={40} style={{ color: 'var(--text-muted)', margin: '0 auto 16px', display: 'block' }} />
+            <h3 style={{ fontWeight: '800', margin: '0 0 8px' }}>No matches yet</h3>
+            <p style={{ fontSize: '0.9rem', margin: 0 }}>Keep swiping to find your match!</p>
+            <button onClick={() => navigate('/')} style={{
+              marginTop: '20px', padding: '12px 28px', borderRadius: '50px', border: 'none',
+              background: 'linear-gradient(135deg, #e11d48, #f43f5e)',
+              color: '#fff', fontWeight: '700', cursor: 'pointer', fontSize: '0.93rem'
+            }}>Start Swiping</button>
+          </div>
+        ) : (
+          <>
+            {/* NEW MATCHES BUBBLES — Bumble style */}
+            {newMatches.length > 0 && (
+              <div style={{ marginBottom: '20px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+                  <Sparkles size={16} style={{ color: '#f43f5e' }} />
+                  <span style={{ fontSize: '0.78rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#f43f5e' }}>
+                    New Matches (Tap photo to view profile)
+                  </span>
+                </div>
+                <div style={{ display: 'flex', gap: '16px', overflowX: 'auto', paddingBottom: '8px' }}>
+                  {newMatches.map((match) => {
+                    const timer = getTimeLeft(match.matchedAt);
+                    return (
+                      <div key={match._id} style={{
+                        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px',
+                        cursor: 'pointer', flexShrink: 0, width: '76px'
+                      }}>
+                        {/* Circle avatar with animated ring — clicking opens full profile */}
+                        <div onClick={() => openProfile(match._id)} title="View profile" style={{ position: 'relative' }}>
+                          <div style={{
+                            width: '68px', height: '68px', borderRadius: '50%',
+                            background: 'linear-gradient(135deg, #e11d48, #f43f5e, #fb923c)',
+                            padding: '3px',
+                            boxShadow: '0 4px 16px rgba(244,63,94,0.35)'
+                          }}>
+                            <img
+                              src={getAvatar(match)}
+                              alt={match.name}
+                              style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--surface)' }}
+                            />
+                          </div>
+                          {/* Timer badge */}
+                          {timer && (
+                            <div style={{
+                              position: 'absolute', bottom: '-4px', left: '50%', transform: 'translateX(-50%)',
+                              background: '#f43f5e', color: '#fff', fontSize: '0.58rem', fontWeight: '800',
+                              padding: '2px 5px', borderRadius: '8px', whiteSpace: 'nowrap',
+                              border: '1.5px solid var(--surface)', display: 'flex', alignItems: 'center', gap: '2px'
+                            }}>
+                              <Clock size={8} />
+                              {timer}
+                            </div>
+                          )}
+                        </div>
+                        
+                        <span 
+                          onClick={() => openChat(match._id)}
+                          style={{
+                            fontSize: '0.74rem', fontWeight: '700', color: 'var(--text-main)',
+                            textAlign: 'center', overflow: 'hidden', textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap', width: '100%'
+                          }}
+                        >
+                          {match.name?.split(' ')[0]}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Divider */}
+            <div style={{ height: '1px', background: 'var(--line)', margin: '16px 0' }} />
+
+            {/* CONVERSATIONS LIST */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+                <MessageCircle size={15} style={{ color: 'var(--text-muted)' }} />
+                <span style={{ fontSize: '0.78rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>
+                  Conversations
                 </span>
               </div>
-              <div style={{ display: 'flex', gap: '16px', overflowX: 'auto', paddingBottom: '8px' }}>
-                {newMatches.map((match) => {
-                  const timer = getTimeLeft(match.matchedAt);
-                  return (
-                    <div key={match._id} onClick={() => openChat(match._id)} style={{
-                      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px',
-                      cursor: 'pointer', flexShrink: 0, width: '74px'
-                    }}>
-                      {/* Circle avatar with animated ring */}
-                      <div style={{ position: 'relative' }}>
-                        <div style={{
-                          width: '68px', height: '68px', borderRadius: '50%',
-                          background: 'linear-gradient(135deg, #e11d48, #f43f5e, #fb923c)',
-                          padding: '3px',
-                          boxShadow: '0 4px 16px rgba(244,63,94,0.35)'
-                        }}>
-                          <img
-                            src={getAvatar(match)}
-                            alt={match.name}
-                            style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--bg)' }}
-                          />
-                        </div>
-                        {/* Timer badge */}
-                        {timer && (
-                          <div style={{
-                            position: 'absolute', bottom: '-4px', left: '50%', transform: 'translateX(-50%)',
-                            background: '#f43f5e', color: '#fff', fontSize: '0.58rem', fontWeight: '800',
-                            padding: '2px 5px', borderRadius: '8px', whiteSpace: 'nowrap',
-                            border: '1.5px solid var(--bg)', display: 'flex', alignItems: 'center', gap: '2px'
-                          }}>
-                            <Clock size={8} />
-                            {timer}
-                          </div>
-                        )}
-                      </div>
-                      <span style={{
-                        fontSize: '0.72rem', fontWeight: '700', color: 'var(--text-main)',
-                        textAlign: 'center', overflow: 'hidden', textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap', width: '100%'
-                      }}>
-                        {match.name?.split(' ')[0]}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
 
-          {/* Divider */}
-          <div style={{ height: '1px', background: 'var(--line)', margin: '16px 20px' }} />
+              {matches.map((match) => {
+                const distKm = getDistanceBetween(user._id, match._id);
+                const cityText = match.city ? `${match.city} · ${distKm} km away` : '';
 
-          {/* CHAT LIST — Bumble-style conversations */}
-          <div style={{ padding: '0 12px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', padding: '0 8px' }}>
-              <MessageCircle size={15} style={{ color: 'var(--text-muted)' }} />
-              <span style={{ fontSize: '0.78rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>
-                Conversations
-              </span>
-            </div>
-
-            {matches.map((match) => {
-              const distKm = getDistanceBetween(user._id, match._id);
-              const cityText = match.city ? `${match.city} · ${distKm} km away` : '';
-
-              return (
-                <div
-                  key={match._id}
-                  onClick={() => match.isExpired ? null : openChat(match._id)}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: '14px',
-                    padding: '14px 12px', borderRadius: '18px',
-                    background: 'transparent',
-                    cursor: match.isExpired ? 'default' : 'pointer',
-                    transition: 'background 0.18s ease',
-                    opacity: match.isExpired ? 0.65 : 1
-                  }}
-                  onMouseEnter={e => { if (!match.isExpired) e.currentTarget.style.background = 'var(--surface)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
-                >
-                  {/* Avatar */}
-                  <div style={{ position: 'relative', flexShrink: 0 }}>
-                    <img
-                      src={getAvatar(match)}
-                      alt={match.name}
-                      style={{ width: '56px', height: '56px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--line)' }}
-                    />
-                    {match.isExpired && (
-                      <div style={{
-                        position: 'absolute', inset: 0, borderRadius: '50%',
-                        background: 'rgba(0,0,0,0.45)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center'
-                      }}>
-                        <Crown size={16} style={{ color: '#fbbf24' }} />
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Info */}
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <span style={{ fontWeight: '700', fontSize: '0.97rem', color: 'var(--text-main)' }}>
-                        {match.name}{match.age ? `, ${match.age}` : ''}
-                      </span>
+                return (
+                  <div
+                    key={match._id}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '14px',
+                      padding: '14px 12px', borderRadius: '18px',
+                      background: 'var(--surface-strong)',
+                      border: '1px solid var(--line)',
+                      marginBottom: '10px',
+                      opacity: match.isExpired ? 0.65 : 1
+                    }}
+                  >
+                    {/* Avatar — Clicking avatar goes to Profile View */}
+                    <div 
+                      onClick={() => openProfile(match._id)} 
+                      title="View Profile" 
+                      style={{ position: 'relative', flexShrink: 0, cursor: 'pointer' }}
+                    >
+                      <img
+                        src={getAvatar(match)}
+                        alt={match.name}
+                        style={{ width: '56px', height: '56px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--line)' }}
+                      />
                       {match.isExpired && (
-                        <span style={{
-                          fontSize: '0.65rem', padding: '2px 8px', borderRadius: '20px',
-                          background: 'rgba(251,191,36,0.15)', color: '#d97706', fontWeight: '700'
-                        }}>Expired</span>
+                        <div style={{
+                          position: 'absolute', inset: 0, borderRadius: '50%',
+                          background: 'rgba(0,0,0,0.45)',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center'
+                        }}>
+                          <Crown size={16} style={{ color: '#fbbf24' }} />
+                        </div>
                       )}
                     </div>
-                    <p style={{
-                      margin: '2px 0 0', fontSize: '0.82rem', color: 'var(--text-muted)',
-                      overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'
-                    }}>
-                      {match.isExpired
-                        ? 'Upgrade to Premium to continue chatting'
-                        : (match.bio || cityText || 'Tap to start chatting...')}
-                    </p>
-                  </div>
 
-                  {/* Arrow or Premium lock */}
-                  <div style={{ flexShrink: 0 }}>
-                    {match.isExpired ? (
-                      <button
-                        onClick={(e) => { e.stopPropagation(); navigate('/payment'); }}
-                        style={{
-                          padding: '6px 12px', borderRadius: '20px', border: 'none',
-                          background: 'linear-gradient(135deg, #f59e0b, #d97706)',
-                          color: '#fff', fontWeight: '700', fontSize: '0.72rem', cursor: 'pointer',
-                          display: 'flex', alignItems: 'center', gap: '4px'
-                        }}
-                      >
-                        <Crown size={11} /> Premium
-                      </button>
-                    ) : (
-                      <ChevronRight size={18} style={{ color: 'var(--text-muted)' }} />
-                    )}
+                    {/* Info — Clicking text goes to Chat */}
+                    <div 
+                      onClick={() => match.isExpired ? null : openChat(match._id)} 
+                      style={{ flex: 1, minWidth: 0, cursor: match.isExpired ? 'default' : 'pointer' }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <span style={{ fontWeight: '700', fontSize: '0.97rem', color: 'var(--text-main)' }}>
+                          {match.name}{match.age ? `, ${match.age}` : ''}
+                        </span>
+                        {match.isExpired && (
+                          <span style={{
+                            fontSize: '0.65rem', padding: '2px 8px', borderRadius: '20px',
+                            background: 'rgba(251,191,36,0.15)', color: '#d97706', fontWeight: '700'
+                          }}>Expired</span>
+                        )}
+                      </div>
+                      <p style={{
+                        margin: '3px 0 0', fontSize: '0.82rem', color: 'var(--text-muted)',
+                        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'
+                      }}>
+                        {match.isExpired
+                          ? 'Upgrade to Premium to continue chatting'
+                          : (match.bio || cityText || 'Tap to start chatting...')}
+                      </p>
+                    </div>
+
+                    {/* Arrow / Premium / Profile button */}
+                    <div style={{ flexShrink: 0 }}>
+                      {match.isExpired ? (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); navigate('/payment'); }}
+                          style={{
+                            padding: '6px 12px', borderRadius: '20px', border: 'none',
+                            background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                            color: '#fff', fontWeight: '700', fontSize: '0.72rem', cursor: 'pointer',
+                            display: 'flex', alignItems: 'center', gap: '4px'
+                          }}
+                        >
+                          <Crown size={11} /> Premium
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => openChat(match._id)}
+                          style={{
+                            background: 'none', border: 'none', cursor: 'pointer',
+                            color: 'var(--text-muted)', padding: '6px'
+                          }}
+                        >
+                          <ChevronRight size={20} />
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        </>
-      )}
+                );
+              })}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }

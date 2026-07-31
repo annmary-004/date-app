@@ -254,16 +254,21 @@ function Chat({ user }) {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: 'var(--bg)' }}>
+    <div style={{ maxWidth: '640px', margin: '16px auto', height: 'calc(100vh - 100px)', padding: '0 8px 80px' }}>
+      <div style={{
+        display: 'flex', flexDirection: 'column', height: '100%',
+        background: 'var(--surface)', borderRadius: '28px',
+        border: '1px solid var(--line)', boxShadow: '0 20px 60px rgba(0,0,0,0.12)',
+        overflow: 'hidden'
+      }}>
 
       {/* ── HEADER ── */}
       <div style={{
         display: 'flex', alignItems: 'center', gap: '12px',
-        padding: '12px 16px',
-        background: 'var(--surface)',
+        padding: '14px 18px',
+        background: 'var(--surface-strong)',
         borderBottom: '1px solid var(--line)',
-        position: 'sticky', top: 0, zIndex: 50,
-        backdropFilter: 'blur(20px)'
+        position: 'sticky', top: 0, zIndex: 50
       }}>
         <button
           onClick={() => navigate('/matches')}
@@ -273,7 +278,11 @@ function Chat({ user }) {
         </button>
 
         {matchData && (
-          <>
+          <div 
+            onClick={() => navigate(`/user/${matchId}`)}
+            title="Click to view full profile"
+            style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: 0, cursor: 'pointer' }}
+          >
             <div style={{ position: 'relative' }}>
               <img
                 src={getAvatar(matchData)}
@@ -287,10 +296,13 @@ function Chat({ user }) {
               }} />
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontWeight: '800', fontSize: '1rem', color: 'var(--text-main)' }}>{matchData.name}</div>
+              <div style={{ fontWeight: '800', fontSize: '1rem', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span>{matchData.name}</span>
+                <span style={{ fontSize: '0.68rem', background: 'rgba(244,63,94,0.1)', color: '#f43f5e', padding: '2px 6px', borderRadius: '10px', fontWeight: '700' }}>View Profile</span>
+              </div>
               <div style={{ fontSize: '0.72rem', color: '#22c55e', fontWeight: '600' }}>Active now</div>
             </div>
-          </>
+          </div>
         )}
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -664,6 +676,7 @@ function Chat({ user }) {
           </button>
         )}
       </form>
+      </div>
     </div>
   );
 }
