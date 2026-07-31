@@ -95,17 +95,7 @@ function Matches({ user }) {
 
   return (
     <div style={{ maxWidth: '620px', margin: '0 auto', padding: '16px 12px 120px' }}>
-
-      {/* ── CARD CONTAINER FOR MATCHES PAGE ── */}
-      <div style={{
-        background: 'var(--surface)',
-        borderRadius: '28px',
-        border: '1px solid var(--line)',
-        boxShadow: '0 20px 60px rgba(0,0,0,0.12)',
-        overflow: 'hidden',
-        padding: '24px 20px'
-      }}>
-        
+      
         {/* Header */}
         <div style={{ marginBottom: '20px' }}>
           <h2 style={{ fontSize: '1.7rem', fontWeight: '900', margin: 0, color: 'var(--text-main)' }}>
@@ -319,8 +309,6 @@ function Matches({ user }) {
             </div>
           </>
         )}
-      </div>
-
     </div>
   );
 }

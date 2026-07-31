@@ -13,11 +13,6 @@ function EditPhotos({ user, setUser }) {
   const handleFileUpload = async (e) => {
     const files = Array.from(e.target.files);
     if (!files.length) return;
-    
-    if (images.length + files.length > 6) {
-      setError('You can only have up to 6 photos.');
-      return;
-    }
 
     setLoading(true);
     setError('');
@@ -61,7 +56,7 @@ function EditPhotos({ user, setUser }) {
     }
   };
 
-  const emptySlots = Math.max(0, 6 - images.length);
+  const emptySlots = 1;
   const hasMinPhotos = images.length >= 4;
 
   return (
@@ -76,7 +71,7 @@ function EditPhotos({ user, setUser }) {
         </div>
 
         <p style={{ color: 'var(--text-muted)', marginBottom: '20px', lineHeight: '1.5' }}>
-          Add up to 6 photos. <strong>At least 4 verified photos showing your face clearly are required</strong> to use Heartly. The first photo will be your main profile picture.
+          Add as many photos as you want. <strong>At least 4 verified photos showing your face clearly are required</strong> to use Heartly. The first photo will be your main profile picture.
         </p>
 
         {error && <p className="form-alert" style={{ marginBottom: '16px' }}>{error}</p>}

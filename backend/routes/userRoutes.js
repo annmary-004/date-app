@@ -390,7 +390,7 @@ router.get("/blocked/:userId", async (req, res) => {
 });
 
 // Upload photos
-router.post("/photos/:userId", upload.array("images", 6), async (req, res) => {
+router.post("/photos/:userId", upload.array("images", 20), async (req, res) => {
   try {
     const user = await User.findById(req.params.userId);
     if (!user) return res.status(404).json({ msg: "User not found" });
