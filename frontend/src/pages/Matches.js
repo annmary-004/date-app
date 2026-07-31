@@ -49,7 +49,6 @@ function Matches({ user }) {
     fetchMatches();
   }, [user._id, hasMinPhotos]);
 
-  // Update timer every minute
   useEffect(() => {
     const interval = setInterval(() => forceUpdate(n => n + 1), 60000);
     return () => clearInterval(interval);
@@ -90,30 +89,30 @@ function Matches({ user }) {
   };
 
   const openChat = (id) => navigate(`/chat/${id}`);
-  const openProfile = (id) => navigate(`/user/${id}`);
+  const openProfile = (id) => navigate(`/match-profile/${id}`);
 
-  // Separate: new matches vs conversations
   const newMatches = matches.filter(m => !m.isExpired);
 
   return (
-    <div style={{ maxWidth: '640px', margin: '20px auto', padding: '0 12px 120px' }}>
-      
-      {/* Elevated Glass Card Container */}
+    <div style={{ maxWidth: '620px', margin: '0 auto', padding: '16px 12px 120px' }}>
+
+      {/* ── CARD CONTAINER FOR MATCHES PAGE ── */}
       <div style={{
         background: 'var(--surface)',
         borderRadius: '28px',
         border: '1px solid var(--line)',
-        boxShadow: '0 20px 60px rgba(0,0,0,0.1)',
-        padding: '24px 20px',
-        overflow: 'hidden'
+        boxShadow: '0 20px 60px rgba(0,0,0,0.12)',
+        overflow: 'hidden',
+        padding: '24px 20px'
       }}>
+        
         {/* Header */}
         <div style={{ marginBottom: '20px' }}>
           <h2 style={{ fontSize: '1.7rem', fontWeight: '900', margin: 0, color: 'var(--text-main)' }}>
             Matches
           </h2>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', margin: '4px 0 0' }}>
-            {matches.length} {matches.length === 1 ? 'connection' : 'connections'} total
+            {matches.length} {matches.length === 1 ? 'connection' : 'connections'} total · Tap avatar to view profile
           </p>
         </div>
 
@@ -135,13 +134,13 @@ function Matches({ user }) {
           </div>
         ) : (
           <>
-            {/* NEW MATCHES BUBBLES — Bumble style */}
+            {/* NEW MATCHES ROW — Bumble-style bubbles with countdown timer */}
             {newMatches.length > 0 && (
               <div style={{ marginBottom: '20px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
                   <Sparkles size={16} style={{ color: '#f43f5e' }} />
-                  <span style={{ fontSize: '0.78rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#f43f5e' }}>
-                    New Matches (Tap photo to view profile)
+                  <span style={{ fontSize: '0.8rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#f43f5e' }}>
+                    New Matches
                   </span>
                 </div>
                 <div style={{ display: 'flex', gap: '16px', overflowX: 'auto', paddingBottom: '8px' }}>
@@ -149,11 +148,15 @@ function Matches({ user }) {
                     const timer = getTimeLeft(match.matchedAt);
                     return (
                       <div key={match._id} style={{
-                        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px',
-                        cursor: 'pointer', flexShrink: 0, width: '76px'
+                        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px',
+                        flexShrink: 0, width: '76px'
                       }}>
-                        {/* Circle avatar with animated ring — clicking opens full profile */}
-                        <div onClick={() => openProfile(match._id)} title="View profile" style={{ position: 'relative' }}>
+                        {/* Circle avatar with animated ring — Click avatar opens Full Profile */}
+                        <div
+                          onClick={() => openProfile(match._id)}
+                          title="View Profile"
+                          style={{ position: 'relative', cursor: 'pointer' }}
+                        >
                           <div style={{
                             width: '68px', height: '68px', borderRadius: '50%',
                             background: 'linear-gradient(135deg, #e11d48, #f43f5e, #fb923c)',
@@ -179,13 +182,14 @@ function Matches({ user }) {
                             </div>
                           )}
                         </div>
-                        
-                        <span 
+
+                        {/* Name — Click opens Chat */}
+                        <span
                           onClick={() => openChat(match._id)}
                           style={{
                             fontSize: '0.74rem', fontWeight: '700', color: 'var(--text-main)',
                             textAlign: 'center', overflow: 'hidden', textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap', width: '100%'
+                            whiteSpace: 'nowrap', width: '100%', cursor: 'pointer'
                           }}
                         >
                           {match.name?.split(' ')[0]}
@@ -198,114 +202,125 @@ function Matches({ user }) {
             )}
 
             {/* Divider */}
-            <div style={{ height: '1px', background: 'var(--line)', margin: '16px 0' }} />
+            <div style={{ height: '1px', background: 'var(--line)', margin: '16px 0 20px' }} />
 
-            {/* CONVERSATIONS LIST */}
+            {/* CHAT LIST — Bumble-style conversations */}
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
-                <MessageCircle size={15} style={{ color: 'var(--text-muted)' }} />
-                <span style={{ fontSize: '0.78rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>
+                <MessageCircle size={16} style={{ color: 'var(--text-muted)' }} />
+                <span style={{ fontSize: '0.8rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>
                   Conversations
                 </span>
               </div>
 
-              {matches.map((match) => {
-                const distKm = getDistanceBetween(user._id, match._id);
-                const cityText = match.city ? `${match.city} · ${distKm} km away` : '';
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {matches.map((match) => {
+                  const distKm = getDistanceBetween(user._id, match._id);
+                  const cityText = match.city ? `${match.city} · ${distKm} km away` : `${distKm} km away`;
 
-                return (
-                  <div
-                    key={match._id}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: '14px',
-                      padding: '14px 12px', borderRadius: '18px',
-                      background: 'var(--surface-strong)',
-                      border: '1px solid var(--line)',
-                      marginBottom: '10px',
-                      opacity: match.isExpired ? 0.65 : 1
-                    }}
-                  >
-                    {/* Avatar — Clicking avatar goes to Profile View */}
-                    <div 
-                      onClick={() => openProfile(match._id)} 
-                      title="View Profile" 
-                      style={{ position: 'relative', flexShrink: 0, cursor: 'pointer' }}
+                  return (
+                    <div
+                      key={match._id}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: '14px',
+                        padding: '12px 14px', borderRadius: '20px',
+                        background: 'var(--surface-strong)', border: '1px solid var(--line)',
+                        transition: 'transform 0.15s ease',
+                        opacity: match.isExpired ? 0.7 : 1
+                      }}
                     >
-                      <img
-                        src={getAvatar(match)}
-                        alt={match.name}
-                        style={{ width: '56px', height: '56px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--line)' }}
-                      />
-                      {match.isExpired && (
-                        <div style={{
-                          position: 'absolute', inset: 0, borderRadius: '50%',
-                          background: 'rgba(0,0,0,0.45)',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center'
-                        }}>
-                          <Crown size={16} style={{ color: '#fbbf24' }} />
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Info — Clicking text goes to Chat */}
-                    <div 
-                      onClick={() => match.isExpired ? null : openChat(match._id)} 
-                      style={{ flex: 1, minWidth: 0, cursor: match.isExpired ? 'default' : 'pointer' }}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <span style={{ fontWeight: '700', fontSize: '0.97rem', color: 'var(--text-main)' }}>
-                          {match.name}{match.age ? `, ${match.age}` : ''}
-                        </span>
+                      {/* Avatar — Click Avatar opens Full Profile */}
+                      <div
+                        onClick={() => openProfile(match._id)}
+                        title="View Full Profile"
+                        style={{ position: 'relative', flexShrink: 0, cursor: 'pointer' }}
+                      >
+                        <img
+                          src={getAvatar(match)}
+                          alt={match.name}
+                          style={{ width: '58px', height: '58px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #f43f5e' }}
+                        />
                         {match.isExpired && (
-                          <span style={{
-                            fontSize: '0.65rem', padding: '2px 8px', borderRadius: '20px',
-                            background: 'rgba(251,191,36,0.15)', color: '#d97706', fontWeight: '700'
-                          }}>Expired</span>
+                          <div style={{
+                            position: 'absolute', inset: 0, borderRadius: '50%',
+                            background: 'rgba(0,0,0,0.5)',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center'
+                          }}>
+                            <Crown size={18} style={{ color: '#fbbf24' }} />
+                          </div>
                         )}
                       </div>
-                      <p style={{
-                        margin: '3px 0 0', fontSize: '0.82rem', color: 'var(--text-muted)',
-                        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'
-                      }}>
-                        {match.isExpired
-                          ? 'Upgrade to Premium to continue chatting'
-                          : (match.bio || cityText || 'Tap to start chatting...')}
-                      </p>
-                    </div>
 
-                    {/* Arrow / Premium / Profile button */}
-                    <div style={{ flexShrink: 0 }}>
-                      {match.isExpired ? (
+                      {/* Info & Message preview — Click opens Chat thread */}
+                      <div
+                        onClick={() => match.isExpired ? null : openChat(match._id)}
+                        style={{ flex: 1, minWidth: 0, cursor: match.isExpired ? 'default' : 'pointer' }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                          <span style={{ fontWeight: '800', fontSize: '0.98rem', color: 'var(--text-main)' }}>
+                            {match.name}{match.age ? `, ${match.age}` : ''}
+                          </span>
+                          {match.isExpired && (
+                            <span style={{
+                              fontSize: '0.65rem', padding: '2px 8px', borderRadius: '20px',
+                              background: 'rgba(251,191,36,0.15)', color: '#d97706', fontWeight: '800'
+                            }}>Expired</span>
+                          )}
+                        </div>
+                        <p style={{
+                          margin: '3px 0 0', fontSize: '0.83rem', color: 'var(--text-muted)',
+                          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'
+                        }}>
+                          {match.isExpired
+                            ? 'Upgrade to Premium to continue chatting'
+                            : (match.bio || cityText || 'Tap to start chatting...')}
+                        </p>
+                      </div>
+
+                      {/* Quick Profile View Icon & Chat Arrow */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
                         <button
-                          onClick={(e) => { e.stopPropagation(); navigate('/payment'); }}
+                          onClick={() => openProfile(match._id)}
+                          title="View Profile"
                           style={{
-                            padding: '6px 12px', borderRadius: '20px', border: 'none',
-                            background: 'linear-gradient(135deg, #f59e0b, #d97706)',
-                            color: '#fff', fontWeight: '700', fontSize: '0.72rem', cursor: 'pointer',
-                            display: 'flex', alignItems: 'center', gap: '4px'
+                            width: '34px', height: '34px', borderRadius: '50%', border: 'none',
+                            background: 'rgba(244,63,94,0.1)', color: '#f43f5e',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'
                           }}
                         >
-                          <Crown size={11} /> Premium
+                          <User size={16} />
                         </button>
-                      ) : (
-                        <button
-                          onClick={() => openChat(match._id)}
-                          style={{
-                            background: 'none', border: 'none', cursor: 'pointer',
-                            color: 'var(--text-muted)', padding: '6px'
-                          }}
-                        >
-                          <ChevronRight size={20} />
-                        </button>
-                      )}
+
+                        {match.isExpired ? (
+                          <button
+                            onClick={(e) => { e.stopPropagation(); navigate('/payment'); }}
+                            style={{
+                              padding: '6px 12px', borderRadius: '20px', border: 'none',
+                              background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                              color: '#fff', fontWeight: '800', fontSize: '0.72rem', cursor: 'pointer',
+                              display: 'flex', alignItems: 'center', gap: '4px'
+                            }}
+                          >
+                            <Crown size={11} /> Premium
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => openChat(match._id)}
+                            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}
+                          >
+                            <ChevronRight size={20} style={{ color: 'var(--text-muted)' }} />
+                          </button>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
           </>
         )}
       </div>
+
     </div>
   );
 }

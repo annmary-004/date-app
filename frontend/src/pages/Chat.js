@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   ArrowLeft, Send, Camera, MoreVertical, Mic, Image as ImageIcon,
-  Video, MapPin, Edit2, X, Plus, Crown, Clock
+  Video, MapPin, Edit2, X, Plus, Crown, Clock, User
 } from 'lucide-react';
 import { io } from 'socket.io-client';
 import API from '../api';
@@ -254,98 +254,121 @@ function Chat({ user }) {
   }
 
   return (
-    <div style={{ maxWidth: '640px', margin: '16px auto', height: 'calc(100vh - 100px)', padding: '0 8px 80px' }}>
+    <div style={{ maxWidth: '620px', margin: '0 auto', padding: '16px 12px 100px' }}>
+      
+      {/* ── CARD CONTAINER FOR CHAT PAGE ── */}
       <div style={{
-        display: 'flex', flexDirection: 'column', height: '100%',
-        background: 'var(--surface)', borderRadius: '28px',
-        border: '1px solid var(--line)', boxShadow: '0 20px 60px rgba(0,0,0,0.12)',
-        overflow: 'hidden'
+        background: 'var(--surface)',
+        borderRadius: '28px',
+        border: '1px solid var(--line)',
+        boxShadow: '0 20px 60px rgba(0,0,0,0.12)',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        height: 'calc(100vh - 120px)'
       }}>
 
-      {/* ── HEADER ── */}
-      <div style={{
-        display: 'flex', alignItems: 'center', gap: '12px',
-        padding: '14px 18px',
-        background: 'var(--surface-strong)',
-        borderBottom: '1px solid var(--line)',
-        position: 'sticky', top: 0, zIndex: 50
-      }}>
-        <button
-          onClick={() => navigate('/matches')}
-          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-main)', padding: '6px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-        >
-          <ArrowLeft size={22} />
-        </button>
-
-        {matchData && (
-          <div 
-            onClick={() => navigate(`/user/${matchId}`)}
-            title="Click to view full profile"
-            style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: 0, cursor: 'pointer' }}
+        {/* ── HEADER ── */}
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '12px',
+          padding: '14px 16px',
+          background: 'var(--surface-strong)',
+          borderBottom: '1px solid var(--line)',
+          position: 'sticky', top: 0, zIndex: 50
+        }}>
+          <button
+            onClick={() => navigate('/matches')}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-main)', padding: '6px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           >
-            <div style={{ position: 'relative' }}>
-              <img
-                src={getAvatar(matchData)}
-                alt={matchData.name}
-                style={{ width: '44px', height: '44px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--line)' }}
-              />
-              <div style={{
-                position: 'absolute', bottom: '1px', right: '1px',
-                width: '11px', height: '11px', borderRadius: '50%',
-                background: '#22c55e', border: '2px solid var(--surface)'
-              }} />
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontWeight: '800', fontSize: '1rem', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span>{matchData.name}</span>
-                <span style={{ fontSize: '0.68rem', background: 'rgba(244,63,94,0.1)', color: '#f43f5e', padding: '2px 6px', borderRadius: '10px', fontWeight: '700' }}>View Profile</span>
-              </div>
-              <div style={{ fontSize: '0.72rem', color: '#22c55e', fontWeight: '600' }}>Active now</div>
-            </div>
-          </div>
-        )}
+            <ArrowLeft size={22} />
+          </button>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-          <div style={{ position: 'relative' }}>
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: '6px', borderRadius: '10px' }}
+          {matchData && (
+            <div
+              onClick={() => navigate(`/match-profile/${matchId}`)}
+              title="Click to view full profile"
+              style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: 0, cursor: 'pointer' }}
             >
-              <MoreVertical size={20} />
-            </button>
-            {menuOpen && (
-              <div onClick={() => setMenuOpen(false)} style={{
-                position: 'fixed', inset: 0, zIndex: 98, background: 'transparent'
-              }} />
-            )}
-            {menuOpen && (
-              <div style={{
-                position: 'absolute', top: '110%', right: 0, zIndex: 99,
-                background: 'var(--surface)', border: '1px solid var(--line)',
-                borderRadius: '16px', overflow: 'hidden', minWidth: '180px',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.15)'
-              }}>
-                {[
-                  { label: 'Unmatch', action: 'unmatch', color: 'var(--text-main)' },
-                  { label: 'Report User', action: 'report', color: '#f59e0b' },
-                  { label: 'Block User', action: 'block', color: '#e11d48' }
-                ].map(item => (
-                  <button
-                    key={item.action}
-                    onClick={() => handleSafetyAction(item.action)}
-                    style={{
-                      display: 'block', width: '100%', padding: '12px 18px',
-                      background: 'none', border: 'none', cursor: 'pointer',
-                      textAlign: 'left', color: item.color, fontWeight: '600', fontSize: '0.9rem',
-                      borderBottom: '1px solid var(--line)'
-                    }}
-                  >{item.label}</button>
-                ))}
+              <div style={{ position: 'relative' }}>
+                <img
+                  src={getAvatar(matchData)}
+                  alt={matchData.name}
+                  style={{ width: '44px', height: '44px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #f43f5e' }}
+                />
+                <div style={{
+                  position: 'absolute', bottom: '1px', right: '1px',
+                  width: '11px', height: '11px', borderRadius: '50%',
+                  background: '#22c55e', border: '2px solid var(--surface)'
+                }} />
               </div>
-            )}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontWeight: '800', fontSize: '1rem', color: 'var(--text-main)' }}>{matchData.name}</div>
+                <div style={{ fontSize: '0.72rem', color: '#f43f5e', fontWeight: '700' }}>Tap to view profile</div>
+              </div>
+            </div>
+          )}
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <button
+              onClick={() => navigate(`/match-profile/${matchId}`)}
+              title="View Full Profile"
+              style={{
+                width: '36px', height: '36px', borderRadius: '50%', border: 'none',
+                background: 'rgba(244,63,94,0.1)', color: '#f43f5e',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'
+              }}
+            >
+              <User size={18} />
+            </button>
+
+            <div style={{ position: 'relative' }}>
+              <button
+                onClick={() => setMenuOpen(!menuOpen)}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: '6px', borderRadius: '10px' }}
+              >
+                <MoreVertical size={20} />
+              </button>
+              {menuOpen && (
+                <div onClick={() => setMenuOpen(false)} style={{
+                  position: 'fixed', inset: 0, zIndex: 98, background: 'transparent'
+                }} />
+              )}
+              {menuOpen && (
+                <div style={{
+                  position: 'absolute', top: '110%', right: 0, zIndex: 99,
+                  background: 'var(--surface)', border: '1px solid var(--line)',
+                  borderRadius: '16px', overflow: 'hidden', minWidth: '180px',
+                  boxShadow: '0 8px 32px rgba(0,0,0,0.15)'
+                }}>
+                  {[
+                    { label: 'View Profile', action: 'view-profile', color: 'var(--text-main)' },
+                    { label: 'Unmatch', action: 'unmatch', color: 'var(--text-main)' },
+                    { label: 'Report User', action: 'report', color: '#f59e0b' },
+                    { label: 'Block User', action: 'block', color: '#e11d48' }
+                  ].map(item => (
+                    <button
+                      key={item.action}
+                      onClick={() => {
+                        if (item.action === 'view-profile') {
+                          setMenuOpen(false);
+                          navigate(`/match-profile/${matchId}`);
+                        } else {
+                          handleSafetyAction(item.action);
+                        }
+                      }}
+                      style={{
+                        display: 'block', width: '100%', padding: '12px 18px',
+                        background: 'none', border: 'none', cursor: 'pointer',
+                        textAlign: 'left', color: item.color, fontWeight: '600', fontSize: '0.9rem',
+                        borderBottom: '1px solid var(--line)'
+                      }}
+                    >{item.label}</button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
 
       {/* ── CHAT EXPIRED BANNER ── */}
       {chatExpired && (
