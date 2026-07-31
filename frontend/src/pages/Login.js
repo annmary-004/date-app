@@ -88,7 +88,7 @@ function Login({ setUser }) {
           </div>
           <h2>Welcome Back</h2>
           <p className="register-compact-subtitle">
-            Let's find your perfect match <Sparkles size={14} className="sparkle-icon" />
+            Let's find your perfect match
           </p>
         </div>
 
@@ -101,7 +101,6 @@ function Login({ setUser }) {
               <Mail size={18} className="register-compact-icon" />
               <input
                 type="email"
-                placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -115,7 +114,6 @@ function Login({ setUser }) {
               <Lock size={18} className="register-compact-icon" />
               <input
                 type={showPassword ? "text" : "password"}
-                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required

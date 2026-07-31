@@ -115,7 +115,7 @@ function Register({ setUser }) {
           </div>
           <h2>Create Account</h2>
           <p className="register-compact-subtitle">
-            Let's find your perfect match <Sparkles size={14} className="sparkle-icon" />
+            Let's find your perfect match
           </p>
         </div>
 
@@ -128,7 +128,6 @@ function Register({ setUser }) {
               <User size={18} className="register-compact-icon" />
               <input
                 type="text"
-                placeholder="Full Name"
                 required
                 value={formData.name}
                 onChange={update('name')}
@@ -142,7 +141,6 @@ function Register({ setUser }) {
               <Mail size={18} className="register-compact-icon" />
               <input
                 type="email"
-                placeholder="you@example.com"
                 required
                 value={formData.email}
                 onChange={update('email')}
@@ -157,7 +155,6 @@ function Register({ setUser }) {
                 <Lock size={18} className="register-compact-icon" />
                 <input
                   type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
                   required
                   value={formData.password}
                   onChange={update('password')}
@@ -179,7 +176,6 @@ function Register({ setUser }) {
                 <Lock size={18} className="register-compact-icon" />
                 <input
                   type={showConfirmPassword ? "text" : "password"}
-                  placeholder="••••••••"
                   required
                   value={formData.confirmPassword}
                   onChange={update('confirmPassword')}
