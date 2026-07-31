@@ -200,7 +200,9 @@ img {
 }
 
 .app-container.is-guest {
-  padding: 0;
+  padding: 0 !important;
+  height: 100vh;
+  height: 100dvh;
 }
 
 .app-orb,
