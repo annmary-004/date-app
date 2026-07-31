@@ -126,10 +126,9 @@ function Matches({ user }) {
           <>
             {/* NEW MATCHES ROW — Bumble-style bubbles with countdown timer */}
             {newMatches.length > 0 && (
-              <div style={{ marginBottom: '20px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
-                  <Sparkles size={16} style={{ color: '#f43f5e' }} />
-                  <span style={{ fontSize: '0.8rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#f43f5e' }}>
+              <div style={{ marginBottom: '24px' }}>
+                <div style={{ marginBottom: '14px' }}>
+                  <span style={{ fontSize: '0.85rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#f43f5e' }}>
                     New Matches
                   </span>
                 </div>
@@ -191,19 +190,15 @@ function Matches({ user }) {
               </div>
             )}
 
-            {/* Divider */}
-            <div style={{ height: '1px', background: 'var(--line)', margin: '16px 0 20px' }} />
-
-            {/* CHAT LIST — Bumble-style conversations */}
+            {/* CHAT LIST — WhatsApp style conversations */}
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
-                <MessageCircle size={16} style={{ color: 'var(--text-muted)' }} />
-                <span style={{ fontSize: '0.8rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>
+              <div style={{ marginBottom: '14px' }}>
+                <span style={{ fontSize: '0.85rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)' }}>
                   Conversations
                 </span>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
                 {matches.map((match) => {
                   const distKm = getDistanceBetween(user._id, match._id);
                   const cityText = match.city ? `${match.city} · ${distKm} km away` : `${distKm} km away`;
@@ -213,9 +208,9 @@ function Matches({ user }) {
                       key={match._id}
                       style={{
                         display: 'flex', alignItems: 'center', gap: '14px',
-                        padding: '12px 14px', borderRadius: '20px',
-                        background: 'var(--surface-strong)', border: '1px solid var(--line)',
-                        transition: 'transform 0.15s ease',
+                        padding: '12px 0',
+                        borderBottom: '1px solid var(--line)',
+                        background: 'transparent',
                         opacity: match.isExpired ? 0.7 : 1
                       }}
                     >
@@ -228,7 +223,7 @@ function Matches({ user }) {
                         <img
                           src={getAvatar(match)}
                           alt={match.name}
-                          style={{ width: '58px', height: '58px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #f43f5e' }}
+                          style={{ width: '58px', height: '58px', borderRadius: '50%', objectFit: 'cover' }}
                         />
                         {match.isExpired && (
                           <div style={{
@@ -247,7 +242,7 @@ function Matches({ user }) {
                         style={{ flex: 1, minWidth: 0, cursor: match.isExpired ? 'default' : 'pointer' }}
                       >
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                          <span style={{ fontWeight: '800', fontSize: '0.98rem', color: 'var(--text-main)' }}>
+                          <span style={{ fontWeight: '800', fontSize: '1rem', color: 'var(--text-main)' }}>
                             {match.name}{match.age ? `, ${match.age}` : ''}
                           </span>
                           {match.isExpired && (
@@ -258,7 +253,7 @@ function Matches({ user }) {
                           )}
                         </div>
                         <p style={{
-                          margin: '3px 0 0', fontSize: '0.83rem', color: 'var(--text-muted)',
+                          margin: '4px 0 0', fontSize: '0.88rem', color: 'var(--text-muted)',
                           overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'
                         }}>
                           {match.isExpired
@@ -267,41 +262,19 @@ function Matches({ user }) {
                         </p>
                       </div>
 
-                      {/* Quick Profile View Icon & Chat Arrow */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+                      {match.isExpired && (
                         <button
-                          onClick={() => openProfile(match._id)}
-                          title="View Profile"
+                          onClick={(e) => { e.stopPropagation(); navigate('/payment'); }}
                           style={{
-                            width: '34px', height: '34px', borderRadius: '50%', border: 'none',
-                            background: 'rgba(244,63,94,0.1)', color: '#f43f5e',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'
+                            padding: '6px 12px', borderRadius: '20px', border: 'none',
+                            background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                            color: '#fff', fontWeight: '800', fontSize: '0.72rem', cursor: 'pointer',
+                            display: 'flex', alignItems: 'center', gap: '4px'
                           }}
                         >
-                          <User size={16} />
+                          <Crown size={11} /> Premium
                         </button>
-
-                        {match.isExpired ? (
-                          <button
-                            onClick={(e) => { e.stopPropagation(); navigate('/payment'); }}
-                            style={{
-                              padding: '6px 12px', borderRadius: '20px', border: 'none',
-                              background: 'linear-gradient(135deg, #f59e0b, #d97706)',
-                              color: '#fff', fontWeight: '800', fontSize: '0.72rem', cursor: 'pointer',
-                              display: 'flex', alignItems: 'center', gap: '4px'
-                            }}
-                          >
-                            <Crown size={11} /> Premium
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => openChat(match._id)}
-                            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}
-                          >
-                            <ChevronRight size={20} style={{ color: 'var(--text-muted)' }} />
-                          </button>
-                        )}
-                      </div>
+                      )}
                     </div>
                   );
                 })}
