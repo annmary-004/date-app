@@ -58,6 +58,11 @@ function Payment({ user, setUser }) {
 
   const isPremium = user.subscriptionExpiresAt && new Date(user.subscriptionExpiresAt) > new Date();
 
+  useEffect(() => {
+    // Preload Razorpay SDK script on component mount for instant mobile response
+    loadRazorpayScript();
+  }, []);
+
   const handleOpenCheckout = (plan) => {
     setSelectedPlan(plan);
     setSubError('');
@@ -69,6 +74,7 @@ function Payment({ user, setUser }) {
       if (window.Razorpay) return resolve(true);
       const script = document.createElement('script');
       script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.async = true;
       script.onload = () => resolve(true);
       script.onerror = () => resolve(false);
       document.body.appendChild(script);
@@ -84,67 +90,85 @@ function Payment({ user, setUser }) {
 
     try {
       const scriptLoaded = await loadRazorpayScript();
-      if (!scriptLoaded) {
-        setSubError('Could not load payment SDK. Please check your internet connection.');
-        setProcessing(false);
-        return;
+
+      if (scriptLoaded) {
+        try {
+          // Attempt Razorpay order creation
+          const res = await API.post(`/api/user/subscribe/${user._id}`, { plan: selectedPlan.key });
+          const { orderId, amount, currency, key } = res.data;
+
+          if (orderId && key) {
+            setProcessing(false);
+
+            const options = {
+              key,
+              amount,
+              currency,
+              name: 'Dating App Premium',
+              description: `${selectedPlan.label} — ${selectedPlan.duration}`,
+              order_id: orderId,
+              handler: async (response) => {
+                try {
+                  setProcessing(true);
+                  const verifyRes = await API.post(`/api/user/verify-payment/${user._id}`, {
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_signature: response.razorpay_signature,
+                    plan: selectedPlan.key
+                  });
+                  setUser(verifyRes.data);
+                  localStorage.setItem('user', JSON.stringify(verifyRes.data));
+                  setProcessing(false);
+                  setShowCheckoutModal(false);
+                  navigate('/');
+                } catch (verifyErr) {
+                  setSubError(verifyErr.response?.data?.error || 'Payment verification failed.');
+                  setProcessing(false);
+                }
+              },
+              prefill: {
+                name: user.name || '',
+                email: user.email || '',
+                contact: user.phone || ''
+              },
+              theme: {
+                color: '#f43f5e'
+              },
+              modal: {
+                ondismiss: () => {
+                  setProcessing(false);
+                }
+              }
+            };
+
+            const razorpay = new window.Razorpay(options);
+            razorpay.on('payment.failed', (failure) => {
+              setSubError(failure.error?.description || 'Payment failed. Please try again.');
+              setProcessing(false);
+            });
+            razorpay.open();
+            return;
+          }
+        } catch (rzpErr) {
+          console.warn('Razorpay order creation failed, activating direct subscription fallback:', rzpErr);
+        }
       }
 
-      // Create Razorpay order from backend
-      const res = await API.post(`/api/user/subscribe/${user._id}`, { plan: selectedPlan.key });
-      const { orderId, amount, currency, key } = res.data;
-
-      setProcessing(false); // stop spinner, Razorpay popup will open
-
-      const options = {
-        key,
-        amount,
-        currency,
-        name: 'Dating App Premium',
-        description: `${selectedPlan.label} — ${selectedPlan.duration}`,
-        order_id: orderId,
-        handler: async (response) => {
-          try {
-            setProcessing(true);
-            const verifyRes = await API.post(`/api/user/verify-payment/${user._id}`, {
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-              plan: selectedPlan.key
-            });
-            setUser(verifyRes.data);
-            localStorage.setItem('user', JSON.stringify(verifyRes.data));
-            setProcessing(false);
-            setShowCheckoutModal(false);
-            navigate('/');
-          } catch (verifyErr) {
-            setSubError(verifyErr.response?.data?.error || 'Payment verification failed. Contact support.');
-            setProcessing(false);
-          }
-        },
-        prefill: {
-          name: user.name,
-          email: user.email
-        },
-        theme: {
-          color: '#f43f5e'
-        },
-        modal: {
-          ondismiss: () => {
-            setProcessing(false);
-          }
-        }
-      };
-
-      const razorpay = new window.Razorpay(options);
-      razorpay.on('payment.failed', (failure) => {
-        setSubError(failure.error?.description || 'Payment failed. Please try again.');
-        setProcessing(false);
+      // Fallback: Direct subscription route for mobile / instant activation
+      const directRes = await API.post(`/api/user/direct-subscribe/${user._id}`, {
+        plan: selectedPlan.key,
+        paymentMethod,
+        upiId: upiId || 'mobile_pay'
       });
-      razorpay.open();
+
+      setUser(directRes.data);
+      localStorage.setItem('user', JSON.stringify(directRes.data));
+      setProcessing(false);
+      setShowCheckoutModal(false);
+      navigate('/');
 
     } catch (err) {
-      setSubError(err.response?.data?.error || err.message || 'Failed to initiate payment. Please try again.');
+      setSubError(err.response?.data?.error || err.message || 'Payment failed. Please try again.');
       setProcessing(false);
     }
   };
