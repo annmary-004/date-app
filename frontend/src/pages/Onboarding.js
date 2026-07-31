@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
 import API from '../api';
 
 const STEPS = [
@@ -12,13 +11,13 @@ const STEPS = [
     options: ['Straight', 'Gay', 'Lesbian', 'Bisexual', 'Pansexual', 'Asexual', 'Queer', 'Questioning', 'Prefer not to say']
   },
   { key: 'showMe', label: 'Who do you want to date?', type: 'select', options: ['Women', 'Men', 'Everyone', 'Non-binary people'] },
-  { key: 'age', label: 'Your age', type: 'number', min: 18, max: 120, placeholder: '18+' },
+  { key: 'age', label: 'Your age', type: 'number', min: 18, max: 120 },
   { key: 'lookingFor', label: 'What are you looking for?', type: 'select', options: ['Long-term relationship', 'Short-term, open to long', 'Short-term fun', 'New friends', 'Still figuring it out'] },
-  { key: 'city', label: 'Where do you live?', type: 'text', placeholder: 'City' },
-  { key: 'occupation', label: 'What do you do?', type: 'text', placeholder: 'Job / role' },
-  { key: 'education', label: 'Education', type: 'text', placeholder: 'School or field' },
-  { key: 'interests', label: 'Interests', type: 'text', placeholder: 'travel, music, coffee (comma separated)' },
-  { key: 'bio', label: 'Write a short bio', type: 'textarea', placeholder: 'Tell a bit about yourself' }
+  { key: 'city', label: 'Where do you live?', type: 'text' },
+  { key: 'occupation', label: 'What do you do?', type: 'text' },
+  { key: 'education', label: 'Education', type: 'text' },
+  { key: 'interests', label: 'Your interests', type: 'text' },
+  { key: 'bio', label: 'Write a short bio', type: 'textarea' }
 ];
 
 function Onboarding({ user, setUser }) {
@@ -52,7 +51,6 @@ function Onboarding({ user, setUser }) {
       setError('Please fill this field to continue.');
       return false;
     }
-
     if (current.key === 'age') {
       const ageNum = parseInt(value, 10);
       if (!Number.isFinite(ageNum) || ageNum < 18) {
@@ -60,7 +58,6 @@ function Onboarding({ user, setUser }) {
         return false;
       }
     }
-
     setError('');
     return true;
   };
@@ -71,7 +68,6 @@ function Onboarding({ user, setUser }) {
       setStep((s) => s + 1);
       return;
     }
-
     try {
       setSaving(true);
       const payload = { ...form, age: parseInt(form.age, 10) };
@@ -87,64 +83,75 @@ function Onboarding({ user, setUser }) {
   };
 
   return (
-    <div className="onboarding-wrap">
-      <section className="onboarding-card">
-        <div className="onboarding-progress">
-          <div className="onboarding-progress-bar" style={{ width: `${progress}%` }} />
-        </div>
-        <p className="onboarding-step">Step {step + 1} of {STEPS.length}</p>
-        <h2>{current.label}</h2>
+    <div className="ob-page">
+      {/* Progress bar at top */}
+      <div className="ob-progress-track">
+        <div className="ob-progress-fill" style={{ width: `${progress}%` }} />
+      </div>
 
-        <div className="onboarding-field">
+      <div className="ob-content">
+        <p className="ob-step-label">Step {step + 1} of {STEPS.length}</p>
+        <h1 className="ob-title">{current.label}</h1>
+
+        <div className="ob-input-wrap">
           {current.type === 'select' && (
-            <select className="input-field input-select" value={form[current.key]} onChange={(e) => setValue(e.target.value)}>
+            <select
+              className="ob-input"
+              value={form[current.key]}
+              onChange={(e) => setValue(e.target.value)}
+            >
               <option value="">Select</option>
               {current.options.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
             </select>
           )}
           {current.type === 'text' && (
             <input
-              className="input-field"
+              className="ob-input"
               type="text"
-              placeholder={current.placeholder}
               value={form[current.key]}
               onChange={(e) => setValue(e.target.value)}
             />
           )}
           {current.type === 'number' && (
             <input
-              className="input-field"
+              className="ob-input"
               type="number"
               min={current.min}
               max={current.max}
-              placeholder={current.placeholder}
               value={form[current.key]}
               onChange={(e) => setValue(e.target.value)}
             />
           )}
           {current.type === 'textarea' && (
             <textarea
-              className="input-field input-area"
-              placeholder={current.placeholder}
+              className="ob-input ob-textarea"
               value={form[current.key]}
               onChange={(e) => setValue(e.target.value)}
             />
           )}
         </div>
 
-        {error && <p className="form-alert">{error}</p>}
+        {error && <p className="ob-error">{error}</p>}
 
-        <div className="onboarding-actions">
-          <button className="btn-icon" type="button" onClick={() => setStep((s) => Math.max(0, s - 1))} disabled={step === 0 || saving}>
-            <ArrowLeft size={18} />
-            <span>Back</span>
+        <div className="ob-actions">
+          <button
+            className="ob-btn-back"
+            type="button"
+            onClick={() => setStep((s) => Math.max(0, s - 1))}
+            disabled={step === 0 || saving}
+          >
+            Back
           </button>
-          <button className="btn-primary" type="button" onClick={goNext} disabled={saving}>
-            <span>{isLast ? (saving ? 'Saving...' : 'Finish') : 'Next'}</span>
-            <ArrowRight size={18} />
+          <button
+            className="ob-btn-next"
+            type="button"
+            onClick={goNext}
+            disabled={saving}
+          >
+            {isLast ? (saving ? 'Saving...' : 'Finish') : 'Next'}
           </button>
         </div>
-      </section>
+      </div>
     </div>
   );
 }
