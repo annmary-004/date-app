@@ -35,8 +35,8 @@ function EditPhotos({ user, setUser }) {
   };
 
   const handleDeletePhoto = async (imageUrl) => {
-    if (images.length <= 4) {
-      setError('Safety Rule: You must keep at least 4 verified photos to use Heartly.');
+    if (images.length <= 1) {
+      setError('You must have at least 1 photo.');
       return;
     }
 
@@ -63,7 +63,13 @@ function EditPhotos({ user, setUser }) {
     <div className="screen profile-screen">
       <section className="glass-panel profile-panel edit-panel" style={{ maxWidth: '640px', margin: '0 auto' }}>
         <div className="edit-top">
-          <button className="btn-icon" type="button" onClick={() => navigate('/profile')}>
+          <button className="btn-icon" type="button" onClick={() => {
+            if (images.length < 4) {
+              setError('You must add at least 4 photos before going back.');
+            } else {
+              navigate('/profile');
+            }
+          }}>
             <ArrowLeft size={18} />
             <span>Back</span>
           </button>
